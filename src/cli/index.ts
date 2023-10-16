@@ -1,4 +1,9 @@
 import { program } from 'commander'
+import {
+  handleComponentCreation,
+  handlePageCreation,
+  handleRouteCreation,
+} from '../handlers'
 const packageJson = require('../../package.json')
 
 program
@@ -13,12 +18,8 @@ program
   .description('Create a new page in the App router')
   .option('-n, --name <name>', 'The name of the page to create')
   .option('-p, --path <path>', 'The path of the page to create')
-
   .action((cmd) => {
-    console.log('Creating a new page with the following options:')
-    console.log('Name:', cmd.name)
-    console.log('Path:', cmd.path)
-    // Your page creation logic here
+    handlePageCreation(cmd)
   })
 
 program
@@ -27,28 +28,16 @@ program
   .option('-n, --name <name>', 'The name of the route to create')
   .option('-p, --path <path>', 'The path of the route to create')
   .action((cmd) => {
-    console.log('Generating a new route with the following options:')
-    console.log('Name:', cmd.name)
-    console.log('Path:', cmd.path)
-    // Your route generation logic here
+    handleRouteCreation(cmd)
   })
 
 program
   .command('component')
   .description('Create a new component')
-  .option('-n, --name <name>', 'The name of the component to create')
-  .option('-p, --path <path>', 'The path of the component to create')
-  .option(
-    '-s, --server-component [value]',
-    'The type of the component to create',
-    true
-  )
+  .option('-n, --name [value]', 'The name of the component to create', false)
+  .option('-p, --path [value]', 'The path of the component to create', false)
   .action((cmd) => {
-    console.log('Creating a new component with the following options:')
-    console.log('Name:', cmd.name)
-    console.log('Path:', cmd.path)
-    console.log('Server Component:', cmd.serverComponent)
-    // Your component creation logic here
+    handleComponentCreation(cmd)
   })
 
 program.parse(process.argv)
