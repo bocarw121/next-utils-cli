@@ -2,7 +2,10 @@ import { camelCase, upperFirst } from 'lodash'
 import { red, green } from 'ansicolor'
 
 import { addContentToPath, createDirRecursively, createFile } from '../commands'
-import { component } from '../templates/components'
+import {
+  component,
+  componentWithFunctionKeyword,
+} from '../templates/components'
 import { componentPrompt } from '../prompts'
 
 type ComponentCommand = {
@@ -13,29 +16,39 @@ type ComponentCommand = {
 export async function handleComponentCreation(cmd: ComponentCommand) {
   const { name, path } = cmd
 
-  const { selectedName, clientComponent, customPath, selectedPath } =
-    await componentPrompt()
+  const {
+    selectedName,
+    clientComponent,
+    customPath,
+    selectedPath,
+    isFunctionDeclaration,
+  } = await componentPrompt()
 
   handleComponentErrors(selectedName, name, selectedPath, path)
 
   // Passed in arguments should take precedence over prompts
-  const pathToCreate = customPath
-    ? `${name || selectedName}/${path || selectedPath}`
-    : selectedPath
+  const pathToCreate = path || selectedPath
 
   const componentName = upperFirst(camelCase(selectedName || name))
 
-  const fullPath = createPath(pathToCreate, componentName)
+  const fullPath = createPath(pathToCreate, componentName, customPath)
 
-  handleComponentFiles(fullPath, componentName, clientComponent)
+  handleComponentFiles(
+    fullPath,
+    componentName,
+    clientComponent,
+    isFunctionDeclaration
+  )
 
   console.log(
     green(`Successfully created ${componentName} component at ${fullPath}`)
   )
 }
 
-function createPath(path: string, componentName: string) {
-  const fullPath = `${path}/${componentName}`
+function createPath(path: string, componentName: string, customPath: string) {
+  const fullPath = customPath
+    ? `${path}/${customPath}/${componentName}`
+    : `${path}/${componentName}`
 
   createDirRecursively(fullPath)
 
@@ -45,7 +58,8 @@ function createPath(path: string, componentName: string) {
 function handleComponentFiles(
   fullPath: string,
   componentName: string,
-  clientComponent: boolean
+  clientComponent: boolean,
+  isFunctionDeclaration: boolean
 ) {
   const componentFile = `${fullPath}/${componentName}.tsx`
   const indexTs = `${fullPath}/index.ts`
@@ -53,7 +67,9 @@ function handleComponentFiles(
   createFile(componentFile)
   createFile(indexTs)
 
-  const createdComponent = component(componentName, clientComponent)
+  const createdComponent = isFunctionDeclaration
+    ? componentWithFunctionKeyword(componentName, clientComponent)
+    : component(componentName, clientComponent)
 
   addContentToPath(componentFile, createdComponent)
 

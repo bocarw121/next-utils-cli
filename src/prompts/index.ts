@@ -15,6 +15,12 @@ export async function componentPrompt() {
       message: 'What is the name of the component?',
     },
     {
+      type: 'confirm',
+      name: 'isFunctionDeclaration',
+      message:
+        'Do you want to use the function keyword? to declare the component instead of arrow function?',
+    },
+    {
       type: 'autocomplete',
       name: 'selectedPath',
       message: 'Which directory do you want to create the component in?',
