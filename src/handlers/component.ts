@@ -1,5 +1,4 @@
 import { camelCase, upperFirst } from 'lodash'
-import { red, green } from 'ansicolor'
 
 import { addContentToPath, createDirRecursively, createFile } from '../commands'
 import {
@@ -7,6 +6,7 @@ import {
   componentWithFunctionKeyword,
 } from '../templates/components'
 import { componentPrompt } from '../prompts'
+import { handleErrors, handleSuccess } from '../utils'
 
 type ComponentCommand = {
   name: string
@@ -22,9 +22,9 @@ export async function handleComponentCreation(cmd: ComponentCommand) {
     customPath,
     selectedPath,
     isFunctionDeclaration,
-  } = await componentPrompt()
+  } = await componentPrompt('component')
 
-  handleComponentErrors(selectedName, name, selectedPath, path)
+  handleErrors(selectedName, name, selectedPath, path)
 
   // Passed in arguments should take precedence over prompts
   const pathToCreate = path || selectedPath
@@ -40,9 +40,7 @@ export async function handleComponentCreation(cmd: ComponentCommand) {
     isFunctionDeclaration
   )
 
-  console.log(
-    green(`Successfully created ${componentName} component at ${fullPath}`)
-  )
+  handleSuccess(fullPath, componentName)
 }
 
 function createPath(path: string, componentName: string, customPath: string) {
@@ -76,21 +74,4 @@ function handleComponentFiles(
   const exportStatement = `export * from './${componentName}'`
 
   addContentToPath(indexTs, exportStatement)
-}
-
-function handleComponentErrors(
-  selectedName: string,
-  name: string,
-  selectedPath: string,
-  path: string
-) {
-  if (!selectedName && !name) {
-    console.error(red('You must provide a name for the component'))
-    process.exit(1)
-  }
-
-  if (!selectedPath && !path) {
-    console.error(red('You must provide a path for the component'))
-    process.exit(1)
-  }
 }
