@@ -1,0 +1,43 @@
+{
+  "name": "next-utils-cli",
+  "version": "1.0.0",
+  "description": "",
+  "source": "src/index.ts",
+  "main": "lib/main.js",
+  "module": "lib/module.js",
+  "types": "lib/types.d.ts",
+  "files": [
+    "lib/**/*"
+  ],
+  "scripts": {
+    "build": "./scripts/build.sh",
+    "prepublishOnly": "npm test",
+    "link": "npm link && cd tester && npm link next-utils-cli",
+    "test": "jest",
+    "prepare": "husky install"
+  },
+  "keywords": [],
+  "author": "Bocar Wane",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bocarw121/next-utils-cli.git"
+  },
+  "homepage": "https://github.com/bocarw121/next-utils-cli",
+  "devDependencies": {
+    "@parcel/packager-ts": "^2.9.3",
+    "@parcel/transformer-typescript-types": "^2.8.3",
+    "@types/jest": "^29.5.5",
+    "husky": "^8.0.3",
+    "jest": "^29.7.0",
+    "node-mocks-http": "^1.13.0",
+    "parcel": "^2.8.3",
+    "prettier": "^2.8.8",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "commander": "^11.1.0",
+    "prompts": "^2.4.2"
+  }
+}
