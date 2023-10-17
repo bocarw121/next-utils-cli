@@ -111,7 +111,7 @@ export async function dynamicKeyPrompt() {
       type: 'text',
       name: 'key',
       message: 'What is the dynamic key?',
-      validate: validateText('dynamic route'),
+      validate: validateText('dynamic'),
       onState: handleOnState,
     },
   ])
@@ -136,6 +136,10 @@ export async function routePrompts() {
       name: 'customPath',
       message: `What is the route path? Enter the path, which will be created recursively in the previously chosen directory. ie. /api/[auth] Ensure the path is delimited by /.`,
       validate: (value) => {
+        if (value.length === 0) {
+          return true
+        }
+
         const disallowedCharsRegex = /[,.'"]/
 
         if (disallowedCharsRegex.test(value)) {

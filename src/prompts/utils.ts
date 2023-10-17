@@ -9,7 +9,7 @@ export function handleOnState(state: {
 }
 
 export const validateText = (type: string) => (value: string) => {
-  const disallowedCharsRegex = /[\/\\:?"*<>|]/
+  const disallowedCharsRegex = /[\/\\:?"*<>|,.]/
 
   if (value.length < 1) {
     return `Please enter a valid ${type} name`
@@ -18,4 +18,6 @@ export const validateText = (type: string) => (value: string) => {
   if (disallowedCharsRegex.test(value)) {
     return `Please enter a valid ${type} name without any special characters`
   }
+
+  return true
 }
