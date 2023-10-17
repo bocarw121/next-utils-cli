@@ -1,7 +1,7 @@
 import prompts from 'prompts'
+import { blue } from 'ansicolor'
 
 import { listOfDirectories, listOfDirectoriesForComponents } from '../utils'
-import { blue } from 'ansicolor'
 
 export async function prompt(questions: prompts.PromptObject[]) {
   return prompts(questions)
@@ -62,12 +62,33 @@ export async function layoutPrompt() {
   ])
 }
 
-export async function dynamicPrompt(type: 'Page' | 'Route') {
+export async function dynamicRoutePrompt() {
   return prompt([
     {
       type: 'toggle',
-      name: `isDynamic${type}`,
-      message: `Do you want to create a dynamic ${type.toLowerCase()}?`,
+      name: `isDynamicRoute`,
+      message: `Do you want to create a dynamic route?`,
+      initial: false,
+      active: 'Yes',
+      inactive: 'No',
+    },
+  ])
+}
+
+export async function dynamicPagePrompt() {
+  return prompt([
+    {
+      type: 'toggle',
+      name: `isDynamicPage`,
+      message: `Do you want to create a dynamic page?`,
+      initial: false,
+      active: 'Yes',
+      inactive: 'No',
+    },
+    {
+      type: 'toggle',
+      name: 'isDynamicClientComponent',
+      message: 'Do you want to create a client component for the dynamic page?',
       initial: false,
       active: 'Yes',
       inactive: 'No',

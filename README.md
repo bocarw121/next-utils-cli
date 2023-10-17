@@ -1,6 +1,8 @@
 # Next Utils CLI
 
-Next Utils CLI is a specialized command-line tool exclusively designed for the new Next.js 13 App router, streamlining the creation of routes, pages, and components in your Next.js application.
+[![Test](https://github.com/bocarw121/next-utils-cli/actions/workflows/test.yml/badge.svg)](https://github.com/bocarw121/next-utils-cli/actions/workflows/test.yml) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/bocarw121/next-utils-cli/blob/main/LICENCE)
+
+Next Utils CLI is a command-line tool exclusively designed for the new Next.js App router, streamlining the creation of routes, pages, and components in your Next.js application.
 
 ## Features
 
@@ -10,6 +12,7 @@ Next Utils CLI is a specialized command-line tool exclusively designed for the n
 - Option to create client components.
 - Easily customize the path and name for your files.
 - Recursive directory creation for an organized codebase.
+- Components and pages are camel-cased by default.
 
 ## Installation
 

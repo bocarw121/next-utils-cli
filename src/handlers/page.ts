@@ -2,18 +2,17 @@ import { camelCase, upperFirst } from 'lodash'
 import {
   componentPrompt,
   dynamicKeyPrompt,
-  dynamicPrompt,
+  dynamicPagePrompt,
   layoutPrompt,
 } from '../prompts'
-
-import { addContentToPath, createDirRecursively, createFile } from '../commands'
-import {
-  layoutComponent,
-  page,
-  pageWithFunctionKeyword,
-} from '../templates/page'
 import { handleErrors } from '../utils/errors'
 import { handleSuccess } from '../utils/success'
+import { createPath } from '../utils/handlerUtils'
+import {
+  handleDynamicPageFiles,
+  handlePageFiles,
+  handleLayoutFiles,
+} from '../utils/pageHandlerUtils'
 
 export async function handlePageCreation() {
   try {
@@ -28,7 +27,8 @@ export async function handlePageCreation() {
     handleErrors(selectedName, selectedPath)
 
     const { isLayout } = await layoutPrompt()
-    const { isDynamicPage } = await dynamicPrompt('Page')
+    const { isDynamicPage, isDynamicClientComponent } =
+      await dynamicPagePrompt()
 
     const fullPath = createPath(selectedPath, selectedName, customPath)
 
@@ -40,7 +40,7 @@ export async function handlePageCreation() {
       handleDynamicPageFiles(
         fullPath,
         pageName,
-        clientComponent,
+        isDynamicClientComponent,
         key,
         isArrowFunction
       )
@@ -57,63 +57,4 @@ export async function handlePageCreation() {
     console.error('An error occurred:', error.message)
     process.exit(1)
   }
-}
-
-function createPath(path: string, name: string, customPath: string) {
-  const fullPath = customPath
-    ? `${path}/${customPath}/${name}`
-    : `${path}/${name}`
-
-  createDirRecursively(fullPath)
-
-  return fullPath
-}
-
-function handlePageFiles(
-  fullPath: string,
-  pageName: string,
-  clientPage: boolean,
-  isArrowFunction: boolean
-) {
-  const pageFile = `${fullPath}/page.tsx`
-
-  createFile(pageFile)
-
-  const createdPage = isArrowFunction
-    ? page(pageName, clientPage)
-    : pageWithFunctionKeyword(pageName, clientPage)
-
-  addContentToPath(pageFile, createdPage)
-}
-
-function handleLayoutFiles(fullPath: string, pageName: string) {
-  const layoutFile = `${fullPath}/layout.tsx`
-
-  createFile(layoutFile)
-
-  const layout = layoutComponent(pageName)
-
-  addContentToPath(layoutFile, layout)
-}
-
-function handleDynamicPageFiles(
-  fullPath: string,
-  pageName: string,
-  clientPage: boolean,
-  key: string,
-  isArrowFunction: boolean
-) {
-  const dynamicDir = `${fullPath}/[${key}]`
-
-  createDirRecursively(dynamicDir)
-
-  const dynamicPageFile = `${dynamicDir}/page.tsx`
-
-  createFile(dynamicPageFile)
-
-  const dynamicPage = isArrowFunction
-    ? page(pageName, clientPage, key)
-    : pageWithFunctionKeyword(pageName, clientPage, key)
-
-  addContentToPath(dynamicPageFile, dynamicPage)
 }
