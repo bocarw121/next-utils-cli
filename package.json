@@ -11,9 +11,9 @@
     "bin/**/*"
   ],
   "scripts": {
-    "build": "rm -rf lib && parcel build --no-cache --no-source-maps",
+    "build": "./scripts/build.sh",
     "link": "cd tester && npm link next-utils-cli",
-    "prepublishOnly": "npm test && ./scripts/build.sh",
+    "prepublishOnly": "npm test && npm run build",
     "test": "jest",
     "prepare": "husky install"
   },
