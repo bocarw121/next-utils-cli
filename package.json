@@ -1,7 +1,7 @@
 {
   "name": "next-utils",
   "version": "1.0.0",
-  "description": "A CLI tool to generate Next.js boilerplate code",
+  "description": "Streamline route, page, and component creation in the new Next.js App router with the next-utils CLI tool.",
   "source": "src/index.ts",
   "main": "lib/main.js",
   "module": "lib/module.js",
@@ -16,7 +16,24 @@
     "test": "jest",
     "prepare": "husky install"
   },
-  "keywords": [],
+  "keywords": [
+    "next.js",
+    "App router",
+    "cli",
+    "command-line",
+    "routing",
+    "pages",
+    "components",
+    "generation",
+    "development",
+    "developer tool",
+    "web development",
+    "frontend",
+    "javascript",
+    "code generation",
+    "project scaffolding",
+    "rapid development"
+  ],
   "author": "Bocar Wane",
   "license": "MIT",
   "repository": {
@@ -45,8 +62,6 @@
   "dependencies": {
     "ansicolor": "^1.1.100",
     "commander": "^11.1.0",
-    "filewalker": "^0.1.3",
-    "inquirer": "^9.2.11",
     "lodash": "^4.17.21",
     "prompts": "^2.4.2",
     "shelljs": "^0.8.5"

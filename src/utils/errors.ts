@@ -7,18 +7,13 @@ export function handleMethodError(methods: string[]) {
   }
 }
 
-export function handleErrors(
-  selectedName: string,
-  name: string,
-  selectedPath: string,
-  path: string
-) {
-  if (!selectedName && !name) {
+export function handleErrors(selectedName: string, selectedPath: string) {
+  if (!selectedName) {
     console.error(red('You must provide a name'))
     process.exit(1)
   }
 
-  if (!selectedPath && !path) {
+  if (!selectedPath) {
     console.error(red('You must provide a path'))
     process.exit(1)
   }

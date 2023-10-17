@@ -1,4 +1,3 @@
-import { camelCase, upperFirst } from 'lodash'
 import {
   dynamicKeyPrompt,
   dynamicPagePrompt,
@@ -12,46 +11,38 @@ import {
   createFile,
 } from '../commands'
 import { handleTemplates } from '../templates/route'
-
 import { handleMethodError, handleErrors } from '../utils/errors'
 import { handleSuccess } from '../utils/success'
 
-type RouteCommand = {
-  name: string
-  path: string
-}
+export async function handleRouteCreation() {
+  try {
+    const { selectedName, customPath, selectedPath } = await routePrompts()
 
-export async function handleRouteCreation(cmd: RouteCommand) {
-  const { name, path } = cmd
+    handleErrors(selectedName, selectedPath)
 
-  const { selectedName, customPath, selectedPath } = await routePrompts()
+    const { isDynamicPage } = await dynamicPagePrompt()
 
-  handleErrors(selectedName, name, selectedPath, path)
+    const { methods } = await methodPrompt('route')
 
-  const { isDynamicPage } = await dynamicPagePrompt()
+    handleMethodError(methods)
 
-  const { methods } = await methodPrompt('route')
+    const fullPath = createPath(selectedPath, selectedName, customPath)
 
-  handleMethodError(methods)
+    handleRouteFile(fullPath, methods)
 
-  // Passed in arguments should take precedence over prompts
-  const pathToCreate = path || selectedPath
+    if (isDynamicPage) {
+      const { key } = await dynamicKeyPrompt()
 
-  const pageName = selectedName || name
+      const { methods } = await methodPrompt('dynamic')
 
-  const fullPath = createPath(pathToCreate, pageName, customPath)
+      handleDynamicPageFiles(fullPath, methods, key)
+    }
 
-  handleRouteFile(fullPath, methods)
-
-  if (isDynamicPage) {
-    const { key } = await dynamicKeyPrompt()
-
-    const { methods } = await methodPrompt('dynamic')
-
-    handleDynamicPageFiles(fullPath, methods, key)
+    handleSuccess(fullPath, selectedName)
+  } catch (error) {
+    console.error('An error occurred:', error.message)
+    process.exit(1)
   }
-
-  handleSuccess(fullPath, pageName)
 }
 
 function createPath(path: string, pageName: string, customPath: string) {

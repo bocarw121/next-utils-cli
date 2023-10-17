@@ -20,8 +20,8 @@ export async function componentPrompt(type: 'component' | 'page') {
       message:
         'Do you want to use an arrow function for the component? The default is a function declaration.',
       initial: false,
-      active: 'yes',
-      inactive: 'no',
+      active: 'Yes',
+      inactive: 'No',
     },
     {
       type: 'autocomplete',
@@ -39,9 +39,12 @@ export async function componentPrompt(type: 'component' | 'page') {
       instructions: 'Note that path must be delimited by /',
     },
     {
-      type: 'confirm',
+      type: 'toggle',
       name: 'clientComponent',
       message: 'Do you want to create a client component?',
+      initial: false,
+      active: 'Yes',
+      inactive: 'No',
     },
   ])
 }

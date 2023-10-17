@@ -15,53 +15,48 @@ import {
 import { handleErrors } from '../utils/errors'
 import { handleSuccess } from '../utils/success'
 
-type PageCommand = {
-  name: string
-  path: string
-}
-
-export async function handlePageCreation(cmd: PageCommand) {
-  const { name, path } = cmd
-
-  const {
-    selectedName,
-    clientComponent,
-    customPath,
-    selectedPath,
-    isArrowFunction,
-  } = await componentPrompt('page')
-
-  handleErrors(selectedName, name, selectedPath, path)
-
-  const { isLayout } = await layoutPrompt()
-  const { isDynamicPage } = await dynamicPagePrompt()
-
-  // Passed in arguments should take precedence over prompts
-  const pathToCreate = path || selectedPath
-
-  const pageName = upperFirst(camelCase(selectedName || name))
-
-  const fullPath = createPath(pathToCreate, pageName, customPath)
-
-  if (isDynamicPage) {
-    const { key } = await dynamicKeyPrompt()
-
-    handleDynamicPageFiles(
-      fullPath,
-      pageName,
+export async function handlePageCreation() {
+  try {
+    const {
+      selectedName,
       clientComponent,
-      key,
-      isArrowFunction
-    )
+      customPath,
+      selectedPath,
+      isArrowFunction,
+    } = await componentPrompt('page')
+
+    handleErrors(selectedName, selectedPath)
+
+    const { isLayout } = await layoutPrompt()
+    const { isDynamicPage } = await dynamicPagePrompt()
+
+    const pageName = upperFirst(camelCase(selectedName))
+
+    const fullPath = createPath(selectedPath, pageName, customPath)
+
+    if (isDynamicPage) {
+      const { key } = await dynamicKeyPrompt()
+
+      handleDynamicPageFiles(
+        fullPath,
+        pageName,
+        clientComponent,
+        key,
+        isArrowFunction
+      )
+    }
+
+    handlePageFiles(fullPath, pageName, clientComponent, isArrowFunction)
+
+    if (isLayout) {
+      handleLayoutFiles(fullPath, pageName)
+    }
+
+    handleSuccess(fullPath, pageName)
+  } catch (error) {
+    console.error('An error occurred:', error.message)
+    process.exit(1)
   }
-
-  handlePageFiles(fullPath, pageName, clientComponent, isArrowFunction)
-
-  if (isLayout) {
-    handleLayoutFiles(fullPath, pageName)
-  }
-
-  handleSuccess(fullPath, pageName)
 }
 
 function createPath(path: string, pageName: string, customPath: string) {

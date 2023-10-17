@@ -11,7 +11,7 @@ type ${name}Props = {};
 
 const ${name} = (props: ${name}Props) => {
   return <h1>Welcome to ${name} page with ${id}</h1>
-};
+ };
 
 export default ${name};
   `
