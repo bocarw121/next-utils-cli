@@ -1,17 +1,19 @@
-import { camelCase, isFunction, upperFirst } from 'lodash'
+import { camelCase, upperFirst } from 'lodash'
 import {
   componentPrompt,
   dynamicKeyPrompt,
   dynamicPagePrompt,
   layoutPrompt,
 } from '../prompts'
-import { handleErrors, handleSuccess } from '../utils'
+
 import { addContentToPath, createDirRecursively, createFile } from '../commands'
 import {
   layoutComponent,
   page,
   pageWithFunctionKeyword,
 } from '../templates/page'
+import { handleErrors } from '../utils/errors'
+import { handleSuccess } from '../utils/success'
 
 type PageCommand = {
   name: string
@@ -26,18 +28,13 @@ export async function handlePageCreation(cmd: PageCommand) {
     clientComponent,
     customPath,
     selectedPath,
-    isFunctionDeclaration,
+    isArrowFunction,
   } = await componentPrompt('page')
 
-  if (!path && !selectedPath) {
-    console.log('You must provide a path')
-    process.exit(1)
-  }
+  handleErrors(selectedName, name, selectedPath, path)
 
   const { isLayout } = await layoutPrompt()
   const { isDynamicPage } = await dynamicPagePrompt()
-
-  handleErrors(selectedName, name, selectedPath, path)
 
   // Passed in arguments should take precedence over prompts
   const pathToCreate = path || selectedPath
@@ -54,11 +51,11 @@ export async function handlePageCreation(cmd: PageCommand) {
       pageName,
       clientComponent,
       key,
-      isFunctionDeclaration
+      isArrowFunction
     )
   }
 
-  handlePageFiles(fullPath, pageName, clientComponent, isFunctionDeclaration)
+  handlePageFiles(fullPath, pageName, clientComponent, isArrowFunction)
 
   if (isLayout) {
     handleLayoutFiles(fullPath, pageName)
@@ -81,15 +78,15 @@ function handlePageFiles(
   fullPath: string,
   pageName: string,
   clientPage: boolean,
-  isFunctionDeclaration: boolean
+  isArrowFunction: boolean
 ) {
   const pageFile = `${fullPath}/page.tsx`
 
   createFile(pageFile)
 
-  const createdPage = isFunctionDeclaration
-    ? pageWithFunctionKeyword(pageName, clientPage)
-    : page(pageName, clientPage)
+  const createdPage = isArrowFunction
+    ? page(pageName, clientPage)
+    : pageWithFunctionKeyword(pageName, clientPage)
 
   addContentToPath(pageFile, createdPage)
 }
@@ -109,7 +106,7 @@ function handleDynamicPageFiles(
   pageName: string,
   clientPage: boolean,
   key: string,
-  isFunctionDeclaration: boolean
+  isArrowFunction: boolean
 ) {
   const dynamicDir = `${fullPath}/[${key}]`
 
@@ -119,9 +116,9 @@ function handleDynamicPageFiles(
 
   createFile(dynamicPageFile)
 
-  const dynamicPage = isFunctionDeclaration
-    ? pageWithFunctionKeyword(pageName, clientPage, key)
-    : page(pageName, clientPage, key)
+  const dynamicPage = isArrowFunction
+    ? page(pageName, clientPage, key)
+    : pageWithFunctionKeyword(pageName, clientPage, key)
 
   addContentToPath(dynamicPageFile, dynamicPage)
 }

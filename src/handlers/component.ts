@@ -6,7 +6,8 @@ import {
   componentWithFunctionKeyword,
 } from '../templates/components'
 import { componentPrompt } from '../prompts'
-import { handleErrors, handleSuccess } from '../utils'
+import { handleErrors } from '../utils/errors'
+import { handleSuccess } from '../utils/success'
 
 type ComponentCommand = {
   name: string

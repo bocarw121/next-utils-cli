@@ -11,6 +11,10 @@ export const addContentToPath = (path: string, content: string) => {
   shell.ShellString(content).to(path)
 }
 
+export const appendContentToPath = (path: string, content: string) => {
+  shell.ShellString(content).toEnd(path)
+}
+
 export const changeDirectory = (path: string) => {
   shell.cd(path)
 }

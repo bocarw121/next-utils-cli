@@ -1,7 +1,7 @@
 import prompts from 'prompts'
-import shell from 'shelljs'
 
-import { listOfDirectories } from '../utils'
+import { listOfDirectories, listOfDirectoriesForComponents } from '../utils'
+import { blue } from 'ansicolor'
 
 export async function prompt(questions: prompts.PromptObject[]) {
   return prompts(questions)
@@ -15,21 +15,27 @@ export async function componentPrompt(type: 'component' | 'page') {
       message: `What is the name of the ${type}?`,
     },
     {
-      type: 'confirm',
-      name: 'isFunctionDeclaration',
+      type: 'toggle',
+      name: 'isArrowFunction',
       message:
-        'Do you want to use the function keyword? to declare the component instead of arrow function?',
+        'Do you want to use an arrow function for the component? The default is a function declaration.',
+      initial: false,
+      active: 'yes',
+      inactive: 'no',
     },
     {
       type: 'autocomplete',
       name: 'selectedPath',
       message: `Which directory do you want to create the ${type} in?`,
-      choices: await listOfDirectories(`${shell.pwd().stdout}`),
+      choices:
+        type === 'component'
+          ? await listOfDirectoriesForComponents()
+          : await listOfDirectories(),
     },
     {
       type: 'text',
       name: 'customPath',
-      message: `What is the path of the ${type}? path/to/${type} this will recursively create the path into your the previous chosen directory. Note that path must be delimited by /`,
+      message: `What is the ${type} path? Enter the path, which will be recursively created in the previously chosen directory. Ensure the path is delimited by /.`,
       instructions: 'Note that path must be delimited by /',
     },
     {
@@ -66,6 +72,71 @@ export async function dynamicKeyPrompt() {
       type: 'text',
       name: 'key',
       message: 'What is the dynamic key?',
+    },
+  ])
+}
+
+export async function routePrompts() {
+  return prompt([
+    {
+      type: 'text',
+      name: 'selectedName',
+      message: `What is the name of the route?`,
+    },
+    {
+      type: 'autocomplete',
+      name: 'selectedPath',
+      message: `Which directory do you want to create the route in?`,
+      choices: await listOfDirectories(),
+    },
+    {
+      type: 'text',
+      name: 'customPath',
+      message: `What is the route path? Enter the path, which will be recursively created in the previously chosen directory. Ensure the path is delimited by /.`,
+    },
+  ])
+}
+
+export async function methodPrompt(type: 'dynamic' | 'route') {
+  return prompt([
+    {
+      type: 'multiselect',
+      message: `Select the methods you want to use for the ${
+        type === 'dynamic' ? blue('Dynamic route') : blue('Route')
+      } `,
+      name: 'methods',
+      choices: [
+        {
+          title: 'GET',
+          value: 'GET',
+          description: 'Method to make GET request with',
+        },
+        {
+          title: 'POST',
+          value: 'POST',
+          description: 'Method to make POST request with',
+        },
+        {
+          title: 'PUT',
+          value: 'PUT',
+          description: 'Method to make PUT request with',
+        },
+        {
+          title: 'PATCH',
+          value: 'PATCH',
+          description: 'Method to make PATCH request with',
+        },
+        {
+          title: 'DELETE',
+          value: 'DELETE',
+          description: 'Method to make DELETE request with',
+        },
+        {
+          title: 'OPTIONS',
+          value: 'OPTIONS',
+          description: 'Method to make OPTIONS request with',
+        },
+      ],
     },
   ])
 }
