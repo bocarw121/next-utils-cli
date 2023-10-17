@@ -1,6 +1,6 @@
 import {
   dynamicKeyPrompt,
-  dynamicPagePrompt,
+  dynamicPrompt,
   methodPrompt,
   routePrompts,
 } from '../prompts'
@@ -20,7 +20,7 @@ export async function handleRouteCreation() {
 
     handleErrors(selectedName, selectedPath)
 
-    const { isDynamicPage } = await dynamicPagePrompt()
+    const { isDynamicRoute } = await dynamicPrompt('Route')
 
     const { methods } = await methodPrompt('route')
 
@@ -30,7 +30,7 @@ export async function handleRouteCreation() {
 
     handleRouteFile(fullPath, methods)
 
-    if (isDynamicPage) {
+    if (isDynamicRoute) {
       const { key } = await dynamicKeyPrompt()
 
       const { methods } = await methodPrompt('dynamic')

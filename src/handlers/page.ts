@@ -2,7 +2,7 @@ import { camelCase, upperFirst } from 'lodash'
 import {
   componentPrompt,
   dynamicKeyPrompt,
-  dynamicPagePrompt,
+  dynamicPrompt,
   layoutPrompt,
 } from '../prompts'
 
@@ -28,11 +28,11 @@ export async function handlePageCreation() {
     handleErrors(selectedName, selectedPath)
 
     const { isLayout } = await layoutPrompt()
-    const { isDynamicPage } = await dynamicPagePrompt()
+    const { isDynamicPage } = await dynamicPrompt('Page')
+
+    const fullPath = createPath(selectedPath, selectedName, customPath)
 
     const pageName = upperFirst(camelCase(selectedName))
-
-    const fullPath = createPath(selectedPath, pageName, customPath)
 
     if (isDynamicPage) {
       const { key } = await dynamicKeyPrompt()
@@ -59,10 +59,10 @@ export async function handlePageCreation() {
   }
 }
 
-function createPath(path: string, pageName: string, customPath: string) {
+function createPath(path: string, name: string, customPath: string) {
   const fullPath = customPath
-    ? `${path}/${customPath}/${pageName}`
-    : `${path}/${pageName}`
+    ? `${path}/${customPath}/${name}`
+    : `${path}/${name}`
 
   createDirRecursively(fullPath)
 

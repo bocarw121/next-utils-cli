@@ -52,19 +52,25 @@ export async function componentPrompt(type: 'component' | 'page') {
 export async function layoutPrompt() {
   return prompt([
     {
-      type: 'confirm',
+      type: 'toggle',
       name: 'isLayout',
       message: 'Do you want to create a layout component?',
+      initial: false,
+      active: 'Yes',
+      inactive: 'No',
     },
   ])
 }
 
-export async function dynamicPagePrompt() {
+export async function dynamicPrompt(type: 'Page' | 'Route') {
   return prompt([
     {
-      type: 'confirm',
-      name: 'isDynamicPage',
-      message: 'Do you want to create a dynamic page?',
+      type: 'toggle',
+      name: `isDynamic${type}`,
+      message: `Do you want to create a dynamic ${type.toLowerCase()}?`,
+      initial: false,
+      active: 'Yes',
+      inactive: 'No',
     },
   ])
 }
