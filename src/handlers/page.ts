@@ -54,7 +54,7 @@ export async function handlePageCreation() {
       handleLayoutFiles(fullPath, pageName)
     }
 
-    handleSuccess(fullPath, pageName)
+    handleSuccess(pageName, 'page')
   } catch (error) {
     console.error('An error occurred:', error.message)
     process.exit(1)

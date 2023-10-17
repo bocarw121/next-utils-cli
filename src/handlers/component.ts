@@ -33,7 +33,7 @@ export async function handleComponentCreation() {
     isFunctionDeclaration
   )
 
-  handleSuccess(fullPath, componentName)
+  handleSuccess(componentName, 'component')
 }
 
 function createPath(path: string, componentName: string, customPath: string) {

@@ -46,7 +46,7 @@ export async function handleRouteCreation() {
       handleDynamicRouteFiles(fullPath, methods, key, imports)
     }
 
-    handleSuccess(fullPath, selectedName)
+    handleSuccess(selectedName, 'route')
   } catch (error) {
     console.error('An error occurred:', error.message)
     process.exit(1)
