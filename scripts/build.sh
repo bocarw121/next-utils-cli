@@ -10,7 +10,6 @@ elif [ $version = "minor" ]; then
   node scripts/bumpNpmVersion.js ./package.json minor
 elif [ $version = "major" ]; then
   node scripts/bumpNpmVersion.js ./package.json major
-
 elif [ $version = "test"]; then
   echo "continuing"
 else
@@ -18,7 +17,7 @@ else
 fi
 
 rm -rf lib
-parcel build --no-cache
+parcel build --no-cache --no-source-maps
 cp -r package.json lib/package.json
 cp -r README.md lib/README.md
 

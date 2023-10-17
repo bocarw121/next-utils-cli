@@ -1,18 +1,18 @@
 {
-  "name": "next-utils-cli",
+  "name": "next-utils",
   "version": "1.0.0",
-  "description": "",
+  "description": "A CLI tool to generate Next.js boilerplate code",
   "source": "src/index.ts",
   "main": "lib/main.js",
   "module": "lib/module.js",
   "types": "lib/types.d.ts",
   "files": [
-    "lib/**/*"
+    "lib/**/*",
+    "bin/**/*"
   ],
   "scripts": {
     "build": "./scripts/build.sh",
-    "prepublishOnly": "npm test",
-    "link": "npm link && cd tester && npm link next-utils-cli",
+    "link": "cd tester && npm link next-utils-cli",
     "test": "jest",
     "prepare": "husky install"
   },
@@ -22,6 +22,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bocarw121/next-utils-cli.git"
+  },
+  "bin": {
+    "next-utils": "./bin/next-utils.js"
   },
   "homepage": "https://github.com/bocarw121/next-utils-cli",
   "devDependencies": {

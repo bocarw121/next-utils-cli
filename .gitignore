@@ -2,3 +2,4 @@ node_modules
 lib
 .parcel-cache
 /tester
+.npmrc
