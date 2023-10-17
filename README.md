@@ -56,6 +56,5 @@ Contributions are welcome! If you have ideas for improvements or encounter issue
 
 ## Links
 
-- [GitHub Repository](https://github.com/bocarw121/next-utils-cli)
 - [Report Issues](https://github.com/bocarw121/next-utils-cli/issues)
 - [npm Package](https://www.npmjs.com/package/next-utils-cli)
