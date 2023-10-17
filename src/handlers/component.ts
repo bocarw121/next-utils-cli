@@ -9,14 +9,7 @@ import { componentPrompt } from '../prompts'
 import { handleErrors } from '../utils/errors'
 import { handleSuccess } from '../utils/success'
 
-type ComponentCommand = {
-  name: string
-  path: string
-}
-
-export async function handleComponentCreation(cmd: ComponentCommand) {
-  const { name, path } = cmd
-
+export async function handleComponentCreation() {
   const {
     selectedName,
     clientComponent,
@@ -25,14 +18,13 @@ export async function handleComponentCreation(cmd: ComponentCommand) {
     isFunctionDeclaration,
   } = await componentPrompt('component')
 
-  handleErrors(selectedName, name, selectedPath, path)
+  handleErrors(selectedName, selectedPath)
 
   // Passed in arguments should take precedence over prompts
-  const pathToCreate = path || selectedPath
 
-  const componentName = upperFirst(camelCase(selectedName || name))
+  const componentName = upperFirst(camelCase(selectedName))
 
-  const fullPath = createPath(pathToCreate, componentName, customPath)
+  const fullPath = createPath(selectedPath, componentName, customPath)
 
   handleComponentFiles(
     fullPath,

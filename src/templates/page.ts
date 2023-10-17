@@ -6,11 +6,19 @@ export function page(
   let useClient = pageComponent ? "'use client' \n" : ''
 
   return `${useClient}import React from 'react';
-  
-type ${name}Props = {};
+
+${
+  id
+    ? `type ${name}Props = {
+  params: {
+    ${[id]}: string
+  }
+};`
+    : `type ${name}Props = {};`
+}
 
 const ${name} = (props: ${name}Props) => {
-  return <h1>Welcome to ${name} page with ${id}</h1>
+  return <h1>Welcome to your ${name} page ${id ? `with ${id}` : ''}</h1>
  };
 
 export default ${name};
@@ -26,10 +34,18 @@ export function pageWithFunctionKeyword(
 
   return `${useClient}import React from 'react';
   
-type ${name}Props = {};
+${
+  id
+    ? `type ${name}Props = {
+  params: {
+    ${[id]}: string
+  }
+};`
+    : `type ${name}Props = {};`
+}
 
-export default function ${name} (props: ${name}Props) {
-  return <h1>Welcome to ${name} page ${id}</h1>
+export default function ${name}(props: ${name}Props) {
+  return <h1>Welcome to your ${name} page ${id ? `with ${id}` : ''}</h1>
 };
   `
 }
@@ -37,7 +53,11 @@ export default function ${name} (props: ${name}Props) {
 export function layoutComponent(name: string): string {
   return `import React from 'react'; 
 
-export default function ${name}Layout({ children }) {
+type ${name}Props = {
+  children: React.ReactNode
+};
+
+export default function ${name}Layout({ children }: ${name}Props) {
   return (
     <>
       <main>{children}</main>

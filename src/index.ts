@@ -17,22 +17,22 @@ program
 program
   .command('page')
   .description('Create a new page in the App router')
-  .action((cmd) => {
-    handlePageCreation(cmd)
+  .action(() => {
+    handlePageCreation()
   })
 
 program
   .command('route')
   .description('Generate a new route in the App router')
-  .action((cmd) => {
-    handleRouteCreation(cmd)
+  .action(() => {
+    handleRouteCreation()
   })
 
 program
   .command('component')
   .description('Create a new component')
-  .action((cmd) => {
-    handleComponentCreation(cmd)
+  .action(() => {
+    handleComponentCreation()
   })
 
 program.parse(process.argv)

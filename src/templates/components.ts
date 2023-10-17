@@ -6,7 +6,7 @@ export function component(name: string, clientComponent: boolean): string {
 type ${name}Props = {};
 
 export const ${name} = (props: ${name}Props) => {
-  return <h1>Welcome to ${name} component</h1>
+  return <h1>Welcome to your ${name} component</h1>
 };
   `
 }
@@ -22,7 +22,7 @@ export function componentWithFunctionKeyword(
 type ${name}Props = {};
 
 export function ${name}(props: ${name}Props) {
-  return <h1>Welcome to ${name} component</h1>
+  return <h1>Welcome to your ${name} component</h1>
 };
   `
 }
