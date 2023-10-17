@@ -28,14 +28,16 @@ export async function handleRouteCreation() {
 
     const fullPath = createPath(selectedPath, selectedName, customPath)
 
-    handleRouteFile(fullPath, methods)
+    const imports = `import { NextResponse } from 'next/server'\n\n`
+
+    handleRouteFile(fullPath, methods, imports)
 
     if (isDynamicRoute) {
       const { key } = await dynamicKeyPrompt()
 
       const { methods } = await methodPrompt('dynamic')
 
-      handleDynamicPageFiles(fullPath, methods, key)
+      handleDynamicRouteFiles(fullPath, methods, key, imports)
     }
 
     handleSuccess(fullPath, selectedName)
@@ -55,20 +57,21 @@ function createPath(path: string, pageName: string, customPath: string) {
   return fullPath
 }
 
-function handleRouteFile(fullPath: string, methods: string[]) {
+function handleRouteFile(fullPath: string, methods: string[], imports: string) {
   const routeFile = `${fullPath}/route.ts`
 
   createFile(routeFile)
 
-  addContentToPath(routeFile, `import { NextResponse } from 'next/server'\n`)
+  addContentToPath(routeFile, imports)
 
   handleMethod(routeFile, methods)
 }
 
-function handleDynamicPageFiles(
+function handleDynamicRouteFiles(
   fullPath: string,
   methods: string[],
-  key: string
+  key: string,
+  imports: string
 ) {
   const dynamicDir = `${fullPath}/[${key}]`
 
@@ -78,19 +81,16 @@ function handleDynamicPageFiles(
 
   createFile(dynamicPageFile)
 
-  addContentToPath(
-    dynamicPageFile,
-    `import { NextResponse } from 'next/server'\n`
-  )
+  addContentToPath(dynamicPageFile, imports)
 
-  handleMethod(dynamicPageFile, methods)
+  handleMethod(dynamicPageFile, methods, key)
 }
 
-function handleMethod(routeFile: string, methods: string[]) {
+function handleMethod(routeFile: string, methods: string[], key?: string) {
   for (const method of methods) {
     appendContentToPath(
       routeFile,
-      handleTemplates[method as keyof typeof handleTemplates]
+      handleTemplates(key)[method as keyof typeof handleTemplates]
     )
   }
 }

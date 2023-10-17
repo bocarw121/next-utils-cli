@@ -35,7 +35,7 @@ export async function componentPrompt(type: 'component' | 'page') {
     {
       type: 'text',
       name: 'customPath',
-      message: `What is the ${type} path? Enter the path, which will be recursively created in the previously chosen directory. Ensure the path is delimited by /.`,
+      message: `What is the ${type} path? Enter the path, which will be created recursively  in the previously chosen directory. Ensure the path is delimited by /.`,
       instructions: 'Note that path must be delimited by /',
     },
     {
@@ -101,7 +101,7 @@ export async function routePrompts() {
     {
       type: 'text',
       name: 'customPath',
-      message: `What is the route path? Enter the path, which will be recursively created in the previously chosen directory. Ensure the path is delimited by /.`,
+      message: `What is the route path? Enter the path, which will be created recursively  in the previously chosen directory. Ensure the path is delimited by /.`,
     },
   ])
 }
