@@ -1,6 +1,6 @@
 import { createDirRecursively, appendContentToPath } from '../commands'
 
-import { handleTemplates } from '../templates/route'
+import { handleTemplates } from '../templates'
 
 export function createPath(path: string, name: string, customPath: string) {
   const fullPath = customPath

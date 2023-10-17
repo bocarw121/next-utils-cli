@@ -92,7 +92,6 @@ describe('routeHandlerUtils', () => {
     it('should add content to a route file', () => {
       const fullPath = 'routes/example'
       const methods = ['GET']
-      const imports = 'import React from "react";'
 
       // Create the directory if it doesn't exist
       if (!fs.existsSync(fullPath)) {

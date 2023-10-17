@@ -10,6 +10,7 @@ Next Utils CLI is a command-line tool exclusively designed for the new Next.js A
 - Create routes with various HTTP methods.
 - Choose between different function types for components.
 - Option to create client components.
+- Choice to opt in to client rendering for components and pages.
 - Easily customize the path and name for your files.
 - Recursive directory creation for an organized codebase.
 - Components and pages are camel-cased by default.

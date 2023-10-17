@@ -18,7 +18,7 @@ ${
 }
 
 const ${name} = (props: ${name}Props) => {
-  return <h1>Welcome to your ${name} page ${id ? `with ${id}` : ''}</h1>
+  return <h1>Welcome to your ${name} page ${id ? `{props.params.id}` : ''}</h1>
  };
 
 export default ${name};
@@ -45,7 +45,7 @@ ${
 }
 
 export default function ${name}(props: ${name}Props) {
-  return <h1>Welcome to your ${name} page ${id ? `with ${id}` : ''}</h1>
+  return <h1>Welcome to your ${name} page ${id ? `{props.params.id}` : ''}</h1>
 };
   `
 }
