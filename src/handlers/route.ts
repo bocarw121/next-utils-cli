@@ -4,7 +4,11 @@ import {
   methodPrompt,
   routePrompts,
 } from '../prompts'
-import { handleMethodError, handleErrors } from '../utils/errors'
+import {
+  handleMethodError,
+  handleErrors,
+  handleKeyError,
+} from '../utils/errors'
 import { handleSuccess } from '../utils/success'
 import {
   handleDynamicRouteFiles,
@@ -33,7 +37,11 @@ export async function handleRouteCreation() {
     if (isDynamicRoute) {
       const { key } = await dynamicKeyPrompt()
 
+      handleKeyError(key)
+
       const { methods } = await methodPrompt('dynamic')
+
+      handleMethodError(methods)
 
       handleDynamicRouteFiles(fullPath, methods, key, imports)
     }

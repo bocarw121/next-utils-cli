@@ -5,7 +5,7 @@ import {
   dynamicPagePrompt,
   layoutPrompt,
 } from '../prompts'
-import { handleErrors } from '../utils/errors'
+import { handleErrors, handleKeyError } from '../utils/errors'
 import { handleSuccess } from '../utils/success'
 import { createPath } from '../utils/handlerUtils'
 import {
@@ -36,6 +36,8 @@ export async function handlePageCreation() {
 
     if (isDynamicPage) {
       const { key } = await dynamicKeyPrompt()
+
+      handleKeyError(key)
 
       handleDynamicPageFiles(
         fullPath,

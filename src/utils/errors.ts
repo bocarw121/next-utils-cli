@@ -18,3 +18,10 @@ export function handleErrors(selectedName: string, selectedPath: string) {
     process.exit(1)
   }
 }
+
+export function handleKeyError(key: string) {
+  if (!key) {
+    console.error(red('You must provide a dynamic name'))
+    process.exit(1)
+  }
+}

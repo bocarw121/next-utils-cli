@@ -2,6 +2,7 @@ import prompts from 'prompts'
 import { blue } from 'ansicolor'
 
 import { listOfDirectories, listOfDirectoriesForComponents } from '../utils'
+import { handleOnState, validateText } from './utils'
 
 export async function prompt(questions: prompts.PromptObject[]) {
   return prompts(questions)
@@ -13,6 +14,8 @@ export async function componentPrompt(type: 'component' | 'page') {
       type: 'text',
       name: 'selectedName',
       message: `What is the name of the ${type}?`,
+      validate: validateText(type),
+      onState: handleOnState,
     },
     {
       type: 'toggle',
@@ -22,6 +25,7 @@ export async function componentPrompt(type: 'component' | 'page') {
       initial: false,
       active: 'Yes',
       inactive: 'No',
+      onState: handleOnState,
     },
     {
       type: 'autocomplete',
@@ -31,12 +35,13 @@ export async function componentPrompt(type: 'component' | 'page') {
         type === 'component'
           ? await listOfDirectoriesForComponents()
           : await listOfDirectories(),
+      onState: handleOnState,
     },
     {
       type: 'text',
       name: 'customPath',
-      message: `What is the ${type} path? Enter the path, which will be created recursively  in the previously chosen directory. Ensure the path is delimited by /.`,
-      instructions: 'Note that path must be delimited by /',
+      message: `What is the ${type} path? Enter the path, which will be created recursively  in the previously chosen directory. ie. /api/[auth] Ensure the path is delimited by /.`,
+      onState: handleOnState,
     },
     {
       type: 'toggle',
@@ -45,6 +50,7 @@ export async function componentPrompt(type: 'component' | 'page') {
       initial: false,
       active: 'Yes',
       inactive: 'No',
+      onState: handleOnState,
     },
   ])
 }
@@ -58,6 +64,7 @@ export async function layoutPrompt() {
       initial: false,
       active: 'Yes',
       inactive: 'No',
+      onState: handleOnState,
     },
   ])
 }
@@ -71,6 +78,7 @@ export async function dynamicRoutePrompt() {
       initial: false,
       active: 'Yes',
       inactive: 'No',
+      onState: handleOnState,
     },
   ])
 }
@@ -84,9 +92,10 @@ export async function dynamicPagePrompt() {
       initial: false,
       active: 'Yes',
       inactive: 'No',
+      onState: handleOnState,
     },
     {
-      type: 'toggle',
+      type: (prev) => (prev === 'Yes' ? 'toggle' : null),
       name: 'isDynamicClientComponent',
       message: 'Do you want to create a client component for the dynamic page?',
       initial: false,
@@ -102,6 +111,8 @@ export async function dynamicKeyPrompt() {
       type: 'text',
       name: 'key',
       message: 'What is the dynamic key?',
+      validate: validateText('dynamic route'),
+      onState: handleOnState,
     },
   ])
 }
@@ -112,6 +123,7 @@ export async function routePrompts() {
       type: 'text',
       name: 'selectedName',
       message: `What is the name of the route?`,
+      validate: validateText('route'),
     },
     {
       type: 'autocomplete',
@@ -122,7 +134,14 @@ export async function routePrompts() {
     {
       type: 'text',
       name: 'customPath',
-      message: `What is the route path? Enter the path, which will be created recursively  in the previously chosen directory. Ensure the path is delimited by /.`,
+      message: `What is the route path? Enter the path, which will be created recursively in the previously chosen directory. ie. /api/[auth] Ensure the path is delimited by /.`,
+      validate: (value) => {
+        const disallowedCharsRegex = /[,.'"]/
+
+        if (disallowedCharsRegex.test(value)) {
+          return `Please enter a valid route path without any special characters`
+        }
+      },
     },
   ])
 }
@@ -167,6 +186,14 @@ export async function methodPrompt(type: 'dynamic' | 'route') {
           description: 'Method to make OPTIONS request with',
         },
       ],
+      validate: (values) => {
+        if (values.length > 0) {
+          return true
+        } else {
+          return 'Please select at least one method.'
+        }
+      },
+      onState: handleOnState,
     },
   ])
 }

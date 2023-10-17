@@ -1,6 +1,6 @@
 {
-  "name": "next-utils",
-  "version": "1.0.0",
+  "name": "next-utils-cli",
+  "version": "0.0.54",
   "description": "Streamline route, page, and component creation in the new Next.js App router with the next-utils CLI tool.",
   "source": "src/index.ts",
   "main": "lib/main.js",
