@@ -1,6 +1,6 @@
 {
   "name": "next-utils-cli",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Streamline route, page, and component creation in the new Next.js App router with the next-utils CLI tool.",
   "source": "src/index.ts",
   "main": "lib/main.js",
@@ -11,9 +11,10 @@
     "bin/**/*"
   ],
   "scripts": {
+    "next-utils": "ts-node src/index.ts",
     "build": "./scripts/build.sh",
     "link": "cd tester && npm link next-utils-cli",
-    "prepublishOnly": "npm test && npm run build",
+    "prepublishOnly": "npm test && npm run build -- patch",
     "test": "jest",
     "prepare": "husky install"
   },
@@ -52,13 +53,20 @@
     "@types/lodash": "^4.14.199",
     "@types/prompts": "^2.4.6",
     "@types/shelljs": "^0.8.13",
+    "assert": "^2.1.0",
+    "buffer": "^6.0.3",
+    "events": "^3.3.0",
     "husky": "^8.0.3",
     "jest": "^29.7.0",
     "node-mocks-http": "^1.13.0",
+    "os-browserify": "^0.3.0",
     "parcel": "^2.8.3",
+    "path-browserify": "^1.0.1",
     "prettier": "^2.8.8",
+    "process": "^0.11.10",
     "ts-jest": "^29.1.0",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "util": "^0.12.5"
   },
   "dependencies": {
     "ansicolor": "^1.1.100",

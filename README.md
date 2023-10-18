@@ -54,6 +54,65 @@ This project is licensed under the MIT License. See the [LICENSE](/LICENSE) file
 
 Contributions are welcome! If you have ideas for improvements or encounter issues, please open an [issue](https://github.com/bocarw121/next-utils-cli/issues) or submit a pull request.
 
+### How to Contribute
+
+1. **Fork the Repository**: Click the "Fork" button on the [GitHub page](https://github.com/bocarw121/next-utils-cli) to create your copy of the project.
+
+2. **Clone Your Fork**: In your terminal, run the following command, replacing `[your-username]` with your GitHub username:
+
+   ```bash
+   git clone https://github.com/[your-username]/next-utils-cli.git
+   ```
+
+3. **Install Dependencies**:
+
+   ```bash
+   npm install
+   ```
+
+4. **Make Changes**: Create a new branch for your changes, make improvements or fixes, and commit your work:
+
+   ```bash
+   git checkout -b my-fix
+   # or
+   git switch -c my-fix
+   ```
+
+5. **Run the Project**:
+
+Run the following command to make sure project is running properly:
+
+```bash
+npm run next-utils -- -h
+```
+
+If you want to test in another directory:
+
+```bash
+npm run build test
+
+npm link
+
+# In your test directory
+npm link next-utils-cli
+
+# Then run the command
+next-utils [command]
+```
+
+6. **Add Tests** (if necessary) and Run Them:
+
+   ```bash
+   npm run test
+   ```
+
+7. **Push Your Changes to GitHub**: Commit your changes and push them to GitHub. Then, open a pull request against the `main` branch.
+
+   ```bash
+   git add .
+   git commit -m "Fix: Describe your fix or feature"
+   ```
+
 ## Links
 
 - [Report Issues](https://github.com/bocarw121/next-utils-cli/issues)

@@ -1,6 +1,6 @@
-import shell from 'shelljs'
 import fs from 'fs/promises'
 import path from 'path'
+import shell from 'shelljs'
 
 export async function listOfDirectories() {
   const currentPath = shell.pwd().stdout

@@ -1,4 +1,5 @@
 import { camelCase, upperFirst } from 'lodash'
+
 import {
   componentPrompt,
   dynamicKeyPrompt,

@@ -1,19 +1,25 @@
-echo "Is this a patch, minor, or major update?"
+#!/bin/bash
 
-read -p "Enter patch, minor, major or test : " version
+if [ -z "$1" ]; then
+  echo "Please provide a version argument (patch, minor, major, or test)."
+  exit 1
+fi
+
+version="$1"
 
 echo "Updating version to $version"
 
-if [ $version = "patch" ]; then
+if [ "$version" = "patch" ]; then
   node scripts/bumpNpmVersion.js ./package.json patch
-elif [ $version = "minor" ]; then
+elif [ "$version" = "minor" ]; then
   node scripts/bumpNpmVersion.js ./package.json minor
-elif [ $version = "major" ]; then
+elif [ "$version" = "major" ]; then
   node scripts/bumpNpmVersion.js ./package.json major
-elif [ $version = "test"]; then
-  echo "continuing"
+elif [ "$version" = "test" ]; then
+  echo "Continuing"
 else
   echo "Invalid version"
+  exit 1
 fi
 
 rm -rf lib
@@ -22,7 +28,3 @@ cp -r package.json lib/package.json
 cp -r README.md lib/README.md
 
 npm run link
-
-# streamline freplace -f ./lib/types.d.ts -s "type DataType = 'premium' | 'free';" -r "$(cat tools/types.ts)"
-
-# sed -i '' 's/import("types").//g' ./lib/types.d.ts
