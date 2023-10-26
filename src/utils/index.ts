@@ -25,18 +25,29 @@ export async function listOfDirectories() {
             value: path.join(dirPath, item.name),
           }))
       )
-    } catch (err) {
-      // console.log(red("Couldn't find src/ or app/ directories."))
-      // process.exit(1)
-    }
+    } catch (err) {}
   }
 
-  // Check for src/ directory
-  await checkAndAddDirectories('src')
+  const srcDirExists = await doesDirectoryExist('src')
 
-  // Check for app/ directory
-  await checkAndAddDirectories('app')
+  if (srcDirExists) {
+    await checkAndAddDirectories('src')
+    directories.push({
+      title: 'src',
+      value: path.join(currentPath, 'src'),
+    })
+  }
 
+  const appDirExists = await doesDirectoryExist('app')
+
+  if (appDirExists) {
+    // If app/ directory exists, add it
+    await checkAndAddDirectories('app')
+    directories.push({
+      title: 'app',
+      value: path.join(currentPath, 'app'),
+    })
+  }
   if (directories.length === 0) {
     throw new Error("Couldn't find src/ or app/ directories.")
   }
@@ -72,10 +83,10 @@ export async function listOfDirectoriesForComponents() {
       )
     } catch (err) {
       // Directory doesn't exist; continue without errors
+      console.log(err)
     }
   }
 
-  // Check for src/ directory
   const srcDirExists = await doesDirectoryExist('src')
 
   // If src/ directory exists, add both src/ and app/
@@ -87,8 +98,16 @@ export async function listOfDirectoriesForComponents() {
     })
   }
 
-  // If app/ directory exists, add it
-  await checkAndAddDirectories('app')
+  const appDirExists = await doesDirectoryExist('app')
+
+  if (appDirExists) {
+    // If app/ directory exists, add it as well
+    await checkAndAddDirectories('app')
+    directories.push({
+      title: 'app',
+      value: path.join(currentPath, 'app'),
+    })
+  }
 
   if (directories.length === 0) {
     throw new Error("Couldn't find src/ or app/ directories.")
