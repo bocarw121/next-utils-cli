@@ -2,6 +2,8 @@ import fs from 'fs/promises'
 import path from 'path'
 import shell from 'shelljs'
 
+import { doesDirectoryExist } from './directoryChecks'
+
 export async function listOfDirectories() {
   const currentPath = shell.pwd().stdout
   const directories = []
@@ -67,7 +69,7 @@ export async function listOfDirectoriesForComponents() {
   const currentPath = shell.pwd().stdout
   const directories = []
 
-  const checkAndAddDirectories = async (baseDir) => {
+  const checkAndAddDirectories = async (baseDir: 'src' | 'app') => {
     const dirPath = path.join(currentPath, baseDir)
 
     try {
@@ -81,10 +83,7 @@ export async function listOfDirectoriesForComponents() {
             value: path.join(dirPath, item.name),
           }))
       )
-    } catch (err) {
-      // Directory doesn't exist; continue without errors
-      console.log(err)
-    }
+    } catch (err) {}
   }
 
   const srcDirExists = await doesDirectoryExist('src')
@@ -114,13 +113,4 @@ export async function listOfDirectoriesForComponents() {
   }
 
   return directories
-}
-
-async function doesDirectoryExist(directoryName) {
-  try {
-    await fs.access(directoryName)
-    return true
-  } catch (err) {
-    return false
-  }
 }
