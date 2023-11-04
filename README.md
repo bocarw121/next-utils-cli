@@ -2,7 +2,7 @@
 
 [![Test](https://github.com/bocarw121/next-utils-cli/actions/workflows/test.yml/badge.svg)](https://github.com/bocarw121/next-utils-cli/actions/workflows/test.yml) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/bocarw121/next-utils-cli/blob/main/LICENCE)
 
-Next Utils CLI is a command-line tool exclusively designed for the new Next.js App router, streamlining the creation of routes, pages, and components in your Next.js application.
+Next Utils CLI is a command-line tool exclusively designed for the new Next.js App router, streamlining the creation of routes, pages, and components in your Next.js application. You can also use Next Utils CLI to clean up the boilerplate code from the home page.
 
 ## Features
 
@@ -13,6 +13,7 @@ Next Utils CLI is a command-line tool exclusively designed for the new Next.js A
 - Easily customize the path and name for your files.
 - Recursive directory creation for an organized codebase.
 - When using the `page` and `component` commands, function components are camel-cased by default within those created pages and components.
+- Clean up the boilerplate code from the home page with the `clean-home-page` command.
 
 ## Installation
 
@@ -36,6 +37,10 @@ next-utils page
 
 ```bash
 next-utils component
+```
+
+```bash
+next-utils clean-home-page
 ```
 
 Next Utils CLI will guide you through the process of creating routes, pages, and components with interactive prompts.
