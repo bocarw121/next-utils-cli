@@ -7,6 +7,14 @@ import {
   handleRouteCreation,
 } from './handlers'
 import packageJson from '../package.json'
+import { handleCleanHomePage } from './handlers/cleanHomePage'
+import { checkIfValidAppRouterProject } from './utils/errors'
+
+async function validate() {
+  await checkIfValidAppRouterProject()
+}
+
+validate()
 
 program
   .name('next-js-utils')
@@ -34,6 +42,13 @@ program
   .description('Generate a new component')
   .action(() => {
     handleComponentCreation()
+  })
+
+program
+  .command('clean-home-page')
+  .description('Removes next js boiler plate from the Home page')
+  .action(() => {
+    handleCleanHomePage()
   })
 
 program.parse(process.argv)
