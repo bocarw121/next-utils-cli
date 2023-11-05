@@ -34,10 +34,6 @@ export async function listOfDirectories() {
 
   if (srcDirExists) {
     await checkAndAddDirectories('src')
-    directories.push({
-      title: 'src',
-      value: path.join(currentPath, 'src'),
-    })
   }
 
   const appDirExists = await doesDirectoryExist('app')
