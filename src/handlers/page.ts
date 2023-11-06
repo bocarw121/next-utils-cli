@@ -15,6 +15,7 @@ import {
   handleLayoutFiles,
 } from '../utils/pageHandlerUtils'
 import { createDirRecursively } from '../commands'
+import { checkAndWarnIfDirExists } from '../utils/directoryChecks'
 
 export async function handlePageCreation() {
   try {
@@ -33,6 +34,8 @@ export async function handlePageCreation() {
       await dynamicPagePrompt()
 
     const fullPath = getPath(selectedPath, selectedName, customPath)
+
+    await checkAndWarnIfDirExists(fullPath, 'page')
 
     const pageName = upperFirst(camelCase(selectedName))
 

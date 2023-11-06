@@ -16,6 +16,7 @@ import {
 } from '../utils/routeHandlerUtils'
 import { getPath } from '../utils/handlerUtils'
 import { createDirRecursively } from '../commands'
+import { checkAndWarnIfDirExists } from '../utils/directoryChecks'
 
 export async function handleRouteCreation() {
   try {
@@ -30,6 +31,8 @@ export async function handleRouteCreation() {
     handleMethodError(methods)
 
     const fullPath = getPath(selectedPath, selectedName, customPath)
+
+    await checkAndWarnIfDirExists(fullPath, 'route')
 
     createDirRecursively(fullPath)
 

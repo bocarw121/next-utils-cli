@@ -9,6 +9,7 @@ import { componentPrompt } from '../prompts'
 import { handleErrors } from '../utils/errors'
 import { handleSuccess } from '../utils/success'
 import { getPath } from '../utils/handlerUtils'
+import { checkAndWarnIfDirExists } from '../utils/directoryChecks'
 
 export async function handleComponentCreation() {
   const {
@@ -24,6 +25,8 @@ export async function handleComponentCreation() {
   const componentName = upperFirst(camelCase(selectedName))
 
   const fullPath = getPath(selectedPath, componentName, customPath)
+
+  await checkAndWarnIfDirExists(fullPath, 'component')
 
   createDirRecursively(fullPath)
 
