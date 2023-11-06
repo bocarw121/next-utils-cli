@@ -1,4 +1,4 @@
-import fs from 'fs/promises'
+import { stat, readFile } from 'fs/promises'
 import { red } from 'ansicolor'
 
 import { doesDirectoryExist } from './directoryChecks'
@@ -22,6 +22,11 @@ export function handleErrors(selectedName: string, selectedPath: string) {
   }
 }
 
+/**
+ * Handles errors for dynamic keys
+ * If no key is provided, then the program exits with an error message
+ * @param key
+ */
 export function handleKeyError(key: string) {
   if (!key) {
     console.error(red('You must provide a dynamic name'))
@@ -54,11 +59,21 @@ export async function checkIfValidAppRouterProject() {
 }
 
 async function isNextVersionAtLeast13() {
-  const packageJson = await fs.readFile('package.json', 'utf-8')
+  const isPackageJson = await stat('package.json')
+
+  if (!isPackageJson.isFile()) {
+    return false
+  }
+
+  const packageJson = await readFile('package.json', 'utf-8')
 
   const { dependencies } = JSON.parse(packageJson)
 
-  const nextVersion = dependencies.next.replace('^', '')
+  const nextVersion = dependencies?.next?.replace('^', '')
+
+  if (!nextVersion) {
+    return false
+  }
 
   const nextMajorVersion = nextVersion.split('.').map(Number)[0]
 
