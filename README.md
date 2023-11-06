@@ -50,6 +50,7 @@ Next Utils CLI will guide you through the process of creating routes, pages, and
 - When creating a page, and a route you can only select the `app` directory as the base.
 - For components and pages, you'll be prompted to choose a function type (arrow function or function declaration).
 - When creating a route, you have the flexibility to select multiple HTTP methods to associate with it.
+- When attempting to overwrite an existing directory you will be prompted to confirm the overwrite.
 
 ## License
 
@@ -122,3 +123,7 @@ next-utils [command]
 
 - [Report Issues](https://github.com/bocarw121/next-utils-cli/issues)
 - [npm Package](https://www.npmjs.com/package/next-utils-cli)
+
+## TODO
+
+- [ ] Add examples to README.md

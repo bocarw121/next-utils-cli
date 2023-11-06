@@ -24,15 +24,15 @@ export async function handleRouteCreation() {
 
     handleErrors(selectedName, selectedPath)
 
+    const fullPath = getPath(selectedPath, selectedName, customPath)
+
+    await checkAndWarnIfDirExists(fullPath, 'route')
+
     const { isDynamicRoute } = await dynamicRoutePrompt()
 
     const { methods } = await methodPrompt('route')
 
     handleMethodError(methods)
-
-    const fullPath = getPath(selectedPath, selectedName, customPath)
-
-    await checkAndWarnIfDirExists(fullPath, 'route')
 
     createDirRecursively(fullPath)
 
@@ -44,6 +44,10 @@ export async function handleRouteCreation() {
       const { key } = await dynamicKeyPrompt()
 
       handleKeyError(key)
+
+      const fullDynamicPath = fullPath + `/[${key}]`
+
+      await checkAndWarnIfDirExists(fullDynamicPath, 'route')
 
       const { methods } = await methodPrompt('dynamic')
 

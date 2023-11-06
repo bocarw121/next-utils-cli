@@ -17,7 +17,7 @@
 
 # 1.2.0
 
-- Enhanced safety and user experience by prompting for file overwrite confirmation.
+- Enhanced safety and user experience by prompting for directory overwrite confirmation.
 - Added a main function that runs the program after the validation function is complete.
 - Passed the handler functions references to its respective program action method to clean up the code.
 - Added a couple of checks to the isNextVersionAtLeast13 function in errors.
@@ -31,3 +31,8 @@
   can leader to unnecessary folder creation if user exists out of the prompt.
 - Change createPath to getPath to separate the concerns of creating a path and getting a path.
 - Updated listOfDirectoriesForComponents to add root as an option if no src directory is present.
+
+# 1.2.1
+
+- Updated directory overwrite checks to account for dynamic routes and pages.
+- Added test to husky pre-commit hook.

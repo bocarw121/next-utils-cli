@@ -44,6 +44,10 @@ export async function handlePageCreation() {
 
       handleKeyError(key)
 
+      const fullDynamicPath = fullPath + `/[${key}]`
+
+      await checkAndWarnIfDirExists(fullDynamicPath, 'page')
+
       createDirRecursively(fullPath)
 
       handleDynamicPageFiles(
