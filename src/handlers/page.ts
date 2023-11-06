@@ -1,19 +1,20 @@
 import { camelCase, upperFirst } from 'lodash'
 
 import {
-  componentPrompt,
   dynamicKeyPrompt,
   dynamicPagePrompt,
   layoutPrompt,
+  pagePrompt,
 } from '../prompts'
 import { handleErrors, handleKeyError } from '../utils/errors'
 import { handleSuccess } from '../utils/success'
-import { createPath } from '../utils/handlerUtils'
+import { getPath } from '../utils/handlerUtils'
 import {
   handleDynamicPageFiles,
   handlePageFiles,
   handleLayoutFiles,
 } from '../utils/pageHandlerUtils'
+import { createDirRecursively } from '../commands'
 
 export async function handlePageCreation() {
   try {
@@ -23,7 +24,7 @@ export async function handlePageCreation() {
       customPath,
       selectedPath,
       isArrowFunction,
-    } = await componentPrompt('page')
+    } = await pagePrompt()
 
     handleErrors(selectedName, selectedPath)
 
@@ -31,7 +32,7 @@ export async function handlePageCreation() {
     const { isDynamicPage, isDynamicClientComponent } =
       await dynamicPagePrompt()
 
-    const fullPath = createPath(selectedPath, selectedName, customPath)
+    const fullPath = getPath(selectedPath, selectedName, customPath)
 
     const pageName = upperFirst(camelCase(selectedName))
 
@@ -39,6 +40,8 @@ export async function handlePageCreation() {
       const { key } = await dynamicKeyPrompt()
 
       handleKeyError(key)
+
+      createDirRecursively(fullPath)
 
       handleDynamicPageFiles(
         fullPath,
@@ -48,6 +51,8 @@ export async function handlePageCreation() {
         isArrowFunction
       )
     }
+
+    createDirRecursively(fullPath)
 
     handlePageFiles(fullPath, pageName, clientComponent, isArrowFunction)
 

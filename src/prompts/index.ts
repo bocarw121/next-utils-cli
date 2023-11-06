@@ -2,54 +2,117 @@ import prompts from 'prompts'
 import { blue } from 'ansicolor'
 
 import { listOfDirectories, listOfDirectoriesForComponents } from '../utils'
-import { handleOnState, validateText } from './utils'
+import { handleMessage, handleOnState, validateText } from './utils'
 
 export async function prompt(questions: prompts.PromptObject[]) {
   return prompts(questions)
 }
 
-export async function componentPrompt(type: 'component' | 'page') {
+const commonQuestions: prompts.PromptObject<string>[] = [
+  {
+    type: 'toggle',
+    name: 'isArrowFunction',
+    message:
+      'Do you want to use an arrow function for the component? The default is a function declaration.',
+    initial: false,
+    active: 'Yes',
+    inactive: 'No',
+    onState: handleOnState,
+  },
+  {
+    type: 'toggle',
+    name: 'clientComponent',
+    message: 'Do you want to create a client component?',
+    initial: false,
+    active: 'Yes',
+    inactive: 'No',
+    onState: handleOnState,
+  },
+]
+
+export async function componentPrompt() {
   return prompt([
     {
       type: 'text',
       name: 'selectedName',
-      message: `What is the name of the ${type}?`,
-      validate: validateText(type),
-      onState: handleOnState,
-    },
-    {
-      type: 'toggle',
-      name: 'isArrowFunction',
-      message:
-        'Do you want to use an arrow function for the component? The default is a function declaration.',
-      initial: false,
-      active: 'Yes',
-      inactive: 'No',
+      message: `What is the name of the component?`,
+      validate: validateText('component'),
       onState: handleOnState,
     },
     {
       type: 'autocomplete',
       name: 'selectedPath',
-      message: `Which directory do you want to create the ${type} in?`,
-      choices:
-        type === 'component'
-          ? await listOfDirectoriesForComponents()
-          : await listOfDirectories(),
+      message: `Which directory do you want to create the component in?`,
+      choices: await listOfDirectoriesForComponents(),
       onState: handleOnState,
     },
     {
       type: 'text',
       name: 'customPath',
-      message: `What is the ${type} path? Enter the path, which will be created recursively  in the previously chosen directory. ie. /api/[auth] Ensure the path is delimited by /.`,
+      message: handleMessage('(e.g., ./components)', 'component'),
+      onState: handleOnState,
+    },
+    ...commonQuestions,
+  ])
+}
+
+export async function pagePrompt() {
+  return prompt([
+    {
+      type: 'text',
+      name: 'selectedName',
+      message: `What is the name of the page?`,
+      validate: validateText('page'),
       onState: handleOnState,
     },
     {
-      type: 'toggle',
-      name: 'clientComponent',
-      message: 'Do you want to create a client component?',
-      initial: false,
-      active: 'Yes',
-      inactive: 'No',
+      type: 'autocomplete',
+      name: 'selectedPath',
+      message: `Which directory do you want to create the page in?`,
+      choices: await listOfDirectories(),
+      onState: handleOnState,
+    },
+    {
+      type: 'text',
+      name: 'customPath',
+      message: handleMessage('(e.g., /dashboard)', 'page'),
+      onState: handleOnState,
+    },
+    ...commonQuestions,
+  ])
+}
+
+export async function routePrompts() {
+  return prompt([
+    {
+      type: 'text',
+      name: 'selectedName',
+      message: `What is the name of the route?`,
+      validate: validateText('route'),
+      onState: handleOnState,
+    },
+    {
+      type: 'autocomplete',
+      name: 'selectedPath',
+      message: `Which directory do you want to create the route in?`,
+      choices: await listOfDirectories(),
+      onState: handleOnState,
+    },
+    {
+      type: 'text',
+      name: 'customPath',
+      message: handleMessage('(e.g., /api/[auth])', 'route'),
+      validate: (value) => {
+        if (value.length === 0) {
+          return true
+        }
+
+        const disallowedCharsRegex = /[,.'"]/
+
+        if (disallowedCharsRegex.test(value)) {
+          return `Please enter a valid route path without any special characters`
+        }
+      },
       onState: handleOnState,
     },
   ])
@@ -113,39 +176,6 @@ export async function dynamicKeyPrompt() {
       message: 'What is the dynamic key?',
       validate: validateText('dynamic'),
       onState: handleOnState,
-    },
-  ])
-}
-
-export async function routePrompts() {
-  return prompt([
-    {
-      type: 'text',
-      name: 'selectedName',
-      message: `What is the name of the route?`,
-      validate: validateText('route'),
-    },
-    {
-      type: 'autocomplete',
-      name: 'selectedPath',
-      message: `Which directory do you want to create the route in?`,
-      choices: await listOfDirectories(),
-    },
-    {
-      type: 'text',
-      name: 'customPath',
-      message: `What is the route path? Enter the path, which will be created recursively in the previously chosen directory. ie. /api/[auth] Ensure the path is delimited by /.`,
-      validate: (value) => {
-        if (value.length === 0) {
-          return true
-        }
-
-        const disallowedCharsRegex = /[,.'"]/
-
-        if (disallowedCharsRegex.test(value)) {
-          return `Please enter a valid route path without any special characters`
-        }
-      },
     },
   ])
 }

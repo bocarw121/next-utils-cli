@@ -14,7 +14,8 @@ import {
   handleDynamicRouteFiles,
   handleRouteFile,
 } from '../utils/routeHandlerUtils'
-import { createPath } from '../utils/handlerUtils'
+import { getPath } from '../utils/handlerUtils'
+import { createDirRecursively } from '../commands'
 
 export async function handleRouteCreation() {
   try {
@@ -28,7 +29,9 @@ export async function handleRouteCreation() {
 
     handleMethodError(methods)
 
-    const fullPath = createPath(selectedPath, selectedName, customPath)
+    const fullPath = getPath(selectedPath, selectedName, customPath)
+
+    createDirRecursively(fullPath)
 
     const imports = `import { NextResponse } from 'next/server'\n\n`
 

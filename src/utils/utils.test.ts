@@ -1,17 +1,14 @@
 import fs from 'fs'
 
-import { createPath } from './handlerUtils'
+import { getPath } from './handlerUtils'
 
 import {
   handleRouteFile,
   handleDynamicRouteFiles,
   handleMethod,
 } from './routeHandlerUtils'
-import {
-  handleDynamicPageFiles,
-  handlePageFiles,
-  handleLayoutFiles,
-} from './pageHandlerUtils'
+import { handleDynamicPageFiles, handleLayoutFiles } from './pageHandlerUtils'
+import { createDirRecursively } from '../commands'
 
 describe('routeHandlerUtils', () => {
   afterAll(() => {
@@ -24,7 +21,9 @@ describe('routeHandlerUtils', () => {
       const path = 'routes'
       const routeName = 'example'
       const customPath = 'custom'
-      const fullPath = createPath(path, routeName, customPath)
+      const fullPath = getPath(path, routeName, customPath)
+
+      createDirRecursively(fullPath)
 
       // Check if the directory was created
       expect(fs.existsSync(fullPath)).toBe(true)
@@ -36,7 +35,9 @@ describe('routeHandlerUtils', () => {
     it('should create a path with routeName only', () => {
       const path = 'routes'
       const routeName = 'example'
-      const fullPath = createPath(path, routeName, '')
+      const fullPath = getPath(path, routeName, '')
+
+      createDirRecursively(fullPath)
 
       // Check if the directory was created
       expect(fs.existsSync(fullPath)).toBe(true)
@@ -151,30 +152,7 @@ describe('pageHandlerUtils', () => {
       fs.unlinkSync(dynamicPageFilePath)
       fs.rmSync(`${fullPath}/[${key}]`, { recursive: true })
     })
-
-    // Add more test cases as needed for different scenarios
   })
-
-  // describe('handlePageFiles', () => {
-  //   it('should create and handle page files with arrow function', () => {
-  //     const fullPath = 'pages/products'
-  //     const pageName = 'ProductPage'
-  //     const clientPage = true
-  //     const isArrowFunction = true
-
-  //     // Create page files
-  //     handlePageFiles(fullPath, pageName, clientPage, isArrowFunction)
-
-  //     // Check if page files were created
-  //     const pageFilePath = `${fullPath}/page.tsx`
-  //     expect(fs.existsSync(pageFilePath)).toBe(true)
-
-  //     // Delete the file after the test
-  //     fs.unlinkSync(pageFilePath)
-  //   })
-
-  //   // Add more test cases as needed for different scenarios
-  // })
 
   describe('handleLayoutFiles', () => {
     it('should create and handle layout files', () => {
@@ -197,7 +175,5 @@ describe('pageHandlerUtils', () => {
       fs.unlinkSync(layoutFilePath)
       fs.rmSync(fullPath, { recursive: true })
     })
-
-    // Add more test cases as needed for different scenarios
   })
 })

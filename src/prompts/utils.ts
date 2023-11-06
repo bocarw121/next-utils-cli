@@ -21,3 +21,10 @@ export const validateText = (type: string) => (value: string) => {
 
   return true
 }
+
+export const handleMessage =
+  (example: string, type: string) => (value: string) => {
+    // value here is the full path of the previous selection
+    const prevSelection = value.split('/').pop()
+    return `Do you want to add a path for your ${type}? Enter the path ${example}. Press Enter to use the /${prevSelection} as (root) path. The chosen path will be created recursively if added.`
+  }

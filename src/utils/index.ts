@@ -46,6 +46,7 @@ export async function listOfDirectories() {
       value: path.join(currentPath, 'app'),
     })
   }
+
   if (directories.length === 0) {
     throw new Error("Couldn't find src/ or app/ directories.")
   }
@@ -65,7 +66,7 @@ export async function listOfDirectoriesForComponents() {
   const currentPath = shell.pwd().stdout
   const directories = []
 
-  const checkAndAddDirectories = async (baseDir: 'src' | 'app') => {
+  const checkAndAddDirectories = async (baseDir: 'src' | 'app' | './') => {
     const dirPath = path.join(currentPath, baseDir)
 
     try {
@@ -73,7 +74,13 @@ export async function listOfDirectoriesForComponents() {
 
       directories.push(
         ...dir
-          .filter((item) => item.isDirectory() && item.name !== 'node_modules')
+          .filter(
+            (item) =>
+              item.isDirectory() &&
+              item.name !== 'node_modules' &&
+              item.name !== 'public' &&
+              item.name !== '.next'
+          )
           .map((item) => ({
             title: item.name,
             value: path.join(dirPath, item.name),
@@ -95,12 +102,12 @@ export async function listOfDirectoriesForComponents() {
 
   const appDirExists = await doesDirectoryExist('app')
 
-  if (appDirExists) {
-    // If app/ directory exists, add it as well
-    await checkAndAddDirectories('app')
+  // Need to add root as an option if src doesn't exist
+  if (appDirExists && !srcDirExists) {
+    await checkAndAddDirectories('./')
     directories.push({
-      title: 'app',
-      value: path.join(currentPath, 'app'),
+      title: './',
+      value: path.join(currentPath, './'),
     })
   }
 

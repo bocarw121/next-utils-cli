@@ -8,6 +8,7 @@ import {
 import { componentPrompt } from '../prompts'
 import { handleErrors } from '../utils/errors'
 import { handleSuccess } from '../utils/success'
+import { getPath } from '../utils/handlerUtils'
 
 export async function handleComponentCreation() {
   const {
@@ -16,15 +17,15 @@ export async function handleComponentCreation() {
     customPath,
     selectedPath,
     isFunctionDeclaration,
-  } = await componentPrompt('component')
+  } = await componentPrompt()
 
   handleErrors(selectedName, selectedPath)
 
-  // Passed in arguments should take precedence over prompts
-
   const componentName = upperFirst(camelCase(selectedName))
 
-  const fullPath = createPath(selectedPath, componentName, customPath)
+  const fullPath = getPath(selectedPath, componentName, customPath)
+
+  createDirRecursively(fullPath)
 
   handleComponentFiles(
     fullPath,
@@ -34,16 +35,6 @@ export async function handleComponentCreation() {
   )
 
   handleSuccess(componentName, 'component')
-}
-
-function createPath(path: string, componentName: string, customPath: string) {
-  const fullPath = customPath
-    ? `${path}/${customPath}/${componentName}`
-    : `${path}/${componentName}`
-
-  createDirRecursively(fullPath)
-
-  return fullPath
 }
 
 function handleComponentFiles(
