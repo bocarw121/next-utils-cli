@@ -40,7 +40,7 @@ export async function checkAndWarnIfDirExists(
   try {
     const dirName = directoryName.split('/').slice(-1)[0]
 
-    if (doesDirectoryExist(directoryName)) {
+    if (await doesDirectoryExist(directoryName)) {
       const { shouldContinue } = await prompt([
         {
           type: 'confirm',
