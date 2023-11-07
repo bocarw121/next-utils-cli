@@ -36,3 +36,8 @@
 
 - Updated directory overwrite checks to account for dynamic routes and pages.
 - Added test to husky pre-commit hook.
+
+# 1.2.2
+
+- Fix bug in checkAndWarnIfDirExists, didn't await the promise in the directory check
+  which was causing it to be truthy even when the directory didn't exist.
