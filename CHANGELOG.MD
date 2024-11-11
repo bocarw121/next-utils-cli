@@ -41,3 +41,7 @@
 
 - Fix bug in checkAndWarnIfDirExists, didn't await the promise in the directory check
   which was causing it to be truthy even when the directory didn't exist.
+
+# 1.2.3
+- Fixed bug in `routePrompts`: Removed the `validate` function, which was causing issues 
+  when trying to add a custom route path.

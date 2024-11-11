@@ -102,17 +102,6 @@ export async function routePrompts() {
       type: 'text',
       name: 'customPath',
       message: handleMessage('(e.g., /api/[auth])', 'route'),
-      validate: (value) => {
-        if (value.length === 0) {
-          return true
-        }
-
-        const disallowedCharsRegex = /[,.'"]/
-
-        if (disallowedCharsRegex.test(value)) {
-          return `Please enter a valid route path without any special characters`
-        }
-      },
       onState: handleOnState,
     },
   ])
