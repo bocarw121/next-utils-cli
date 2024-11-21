@@ -2,13 +2,14 @@
 import { program } from 'commander'
 
 import {
-  handleComponentCreation,
+  handleComponentCreation, handleInit,
   handlePageCreation,
   handleRouteCreation,
 } from './handlers'
 import packageJson from '../package.json'
 import { handleCleanHomePage } from './handlers/cleanHomePage'
 import { checkIfValidAppRouterProject } from './utils/errors'
+import { createFile } from './commands'
 
 async function main() {
   await checkIfValidAppRouterProject()
@@ -39,6 +40,11 @@ async function main() {
     .command('clean-home-page')
     .description('Removes next js boiler plate from the Home page')
     .action(handleCleanHomePage)
+
+  program
+    .command('init')
+    .description('Initializes next-utils config file')
+    .action(handleInit)
 
   program.parse(process.argv)
 }
