@@ -15,12 +15,14 @@ import {
   handleRouteFile,
 } from '../utils/routeHandlerUtils'
 import { getPath } from '../utils/handlerUtils'
-import { createDirRecursively } from '../commands'
+import { checkPathInConfigFile, createDirRecursively } from '../commands'
 import { checkAndWarnIfDirExists } from '../utils/directoryChecks'
 
 export async function handleRouteCreation() {
   try {
-    const { selectedName, customPath, selectedPath } = await routePrompts()
+    const { selectedName, customPath } = await routePrompts()
+
+    const selectedPath = checkPathInConfigFile('page', process.cwd())
 
     handleErrors(selectedName, selectedPath)
 

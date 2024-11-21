@@ -91,13 +91,13 @@ export async function routePrompts() {
       validate: validateText('route'),
       onState: handleOnState,
     },
-    {
-      type: 'autocomplete',
-      name: 'selectedPath',
-      message: `Which directory do you want to create the route in?`,
-      choices: await listOfDirectories(),
-      onState: handleOnState,
-    },
+    // {
+    //   type: 'autocomplete',
+    //   name: 'selectedPath',
+    //   message: `Which directory do you want to create the route in?`,
+    //   choices: await listOfDirectories(),
+    //   onState: handleOnState,
+    // },
     {
       type: 'text',
       name: 'customPath',
