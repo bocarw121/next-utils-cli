@@ -65,13 +65,13 @@ export async function pagePrompt() {
       validate: validateText('page'),
       onState: handleOnState,
     },
-    {
-      type: 'autocomplete',
-      name: 'selectedPath',
-      message: `Which directory do you want to create the page in?`,
-      choices: await listOfDirectories(),
-      onState: handleOnState,
-    },
+    // {
+    //   type: 'autocomplete',
+    //   name: 'selectedPath',
+    //   message: `Which directory do you want to create the page in?`,
+    //   choices: await listOfDirectories(),
+    //   onState: handleOnState,
+    // },
     {
       type: 'text',
       name: 'customPath',

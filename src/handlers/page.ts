@@ -14,18 +14,15 @@ import {
   handlePageFiles,
   handleLayoutFiles,
 } from '../utils/pageHandlerUtils'
-import { createDirRecursively } from '../commands'
+import { checkPathInConfigFile, createDirRecursively } from '../commands'
 import { checkAndWarnIfDirExists } from '../utils/directoryChecks'
 
 export async function handlePageCreation() {
   try {
-    const {
-      selectedName,
-      clientComponent,
-      customPath,
-      selectedPath,
-      isArrowFunction,
-    } = await pagePrompt()
+    const { selectedName, clientComponent, customPath, isArrowFunction } =
+      await pagePrompt()
+
+    const selectedPath = checkPathInConfigFile('page', process.cwd())
 
     handleErrors(selectedName, selectedPath)
 
