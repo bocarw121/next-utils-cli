@@ -1,10 +1,12 @@
 import { camelCase, upperFirst } from 'lodash'
 
-import { addContentToPath, createDirRecursively, createFile } from '../commands'
 import {
-  component,
-  componentWithFunctionKeyword,
-} from '../templates/components'
+  addContentToPath,
+  checkPathInConfigFile,
+  createDirRecursively,
+  createFile,
+} from '../commands'
+import { component, componentWithFunctionKeyword } from '../templates'
 import { componentPrompt } from '../prompts'
 import { handleErrors } from '../utils/errors'
 import { handleSuccess } from '../utils/success'
@@ -16,9 +18,11 @@ export async function handleComponentCreation() {
     selectedName,
     clientComponent,
     customPath,
-    selectedPath,
+
     isFunctionDeclaration,
   } = await componentPrompt()
+
+  const selectedPath = checkPathInConfigFile('component', process.cwd())
 
   handleErrors(selectedName, selectedPath)
 

@@ -39,13 +39,13 @@ export async function componentPrompt() {
       validate: validateText('component'),
       onState: handleOnState,
     },
-    {
-      type: 'autocomplete',
-      name: 'selectedPath',
-      message: `Which directory do you want to create the component in?`,
-      choices: await listOfDirectoriesForComponents(),
-      onState: handleOnState,
-    },
+    // {
+    //   type: 'autocomplete',
+    //   name: 'selectedPath',
+    //   message: `Which directory do you want to create the component in?`,
+    //   choices: await listOfDirectoriesForComponents(),
+    //   onState: handleOnState,
+    // },
     {
       type: 'text',
       name: 'customPath',
