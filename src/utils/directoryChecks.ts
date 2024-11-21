@@ -84,3 +84,14 @@ function getRemainingPath(directoryName: string) {
 
   return remainingPath
 }
+
+export const appDirectoryCheck = (dir: string, type: 'Page' | 'Route') => {
+  if (!dir.includes('app')) {
+    console.log(
+      red(
+        `${type} should start from the app directory, please update the next-utils-cli.json file`
+      )
+    )
+    process.exit(1)
+  }
+}

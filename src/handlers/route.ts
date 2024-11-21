@@ -16,13 +16,18 @@ import {
 } from '../utils/routeHandlerUtils'
 import { getPath } from '../utils/handlerUtils'
 import { checkPathInConfigFile, createDirRecursively } from '../commands'
-import { checkAndWarnIfDirExists } from '../utils/directoryChecks'
+import {
+  appDirectoryCheck,
+  checkAndWarnIfDirExists,
+} from '../utils/directoryChecks'
 
 export async function handleRouteCreation() {
   try {
     const { selectedName, customPath } = await routePrompts()
 
     const selectedPath = checkPathInConfigFile('page', process.cwd())
+
+    appDirectoryCheck(selectedPath, 'Route')
 
     handleErrors(selectedName, selectedPath)
 

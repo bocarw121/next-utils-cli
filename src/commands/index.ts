@@ -48,11 +48,9 @@ export const checkPathInConfigFile = (
   // Check if the required property exists in the config
   if (!config[prop]) {
     throw new Error(
-      `The path for ${prop} is not set in next-utils-cli.json. Please run the init command`
+      `The path for ${prop} is not set in next-utils-cli.json. Make sure pages and routes start from the app directory`
     )
   }
-
-  console.log(config[prop])
 
   return config[prop]
 }

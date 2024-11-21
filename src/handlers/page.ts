@@ -15,7 +15,11 @@ import {
   handleLayoutFiles,
 } from '../utils/pageHandlerUtils'
 import { checkPathInConfigFile, createDirRecursively } from '../commands'
-import { checkAndWarnIfDirExists } from '../utils/directoryChecks'
+import {
+  appDirectoryCheck,
+  checkAndWarnIfDirExists,
+} from '../utils/directoryChecks'
+import { red } from 'ansicolor'
 
 export async function handlePageCreation() {
   try {
@@ -23,6 +27,8 @@ export async function handlePageCreation() {
       await pagePrompt()
 
     const selectedPath = checkPathInConfigFile('page', process.cwd())
+
+    appDirectoryCheck(selectedPath, 'Page')
 
     handleErrors(selectedName, selectedPath)
 
