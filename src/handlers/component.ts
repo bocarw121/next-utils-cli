@@ -14,13 +14,8 @@ import { getPath } from '../utils/handlerUtils'
 import { checkAndWarnIfDirExists } from '../utils/directoryChecks'
 
 export async function handleComponentCreation() {
-  const {
-    selectedName,
-    clientComponent,
-    customPath,
-
-    isFunctionDeclaration,
-  } = await componentPrompt()
+  const { selectedName, clientComponent, customPath, isFunctionDeclaration } =
+    await componentPrompt()
 
   const selectedPath = checkPathInConfigFile('component', process.cwd())
 

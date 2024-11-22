@@ -1,13 +1,14 @@
 import {
   addContentToPath,
   checkIfDirectoryExists,
+  checkIfFileExists,
   createFile,
 } from '../commands'
 import { green } from 'ansicolor'
 
 export function handleInit() {
   // check if next-utils-cli.json file exists
-  const isFileExists = checkIfDirectoryExists('next-utils-cli.json')
+  const isFileExists = checkIfFileExists('next-utils-cli.json')
 
   if (isFileExists) {
     console.log(

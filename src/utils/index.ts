@@ -3,6 +3,7 @@ import path from 'path'
 import shell from 'shelljs'
 
 import { doesDirectoryExist } from './directoryChecks'
+import { red } from 'ansicolor'
 
 export async function listOfDirectories() {
   const currentPath = shell.pwd().stdout
@@ -48,7 +49,8 @@ export async function listOfDirectories() {
   }
 
   if (directories.length === 0) {
-    throw new Error("Couldn't find src/ or app/ directories.")
+    console.error(red("Couldn't find src/ or app/ directories."))
+    process.exit(1)
   }
 
   return directories
@@ -60,7 +62,6 @@ export async function listOfDirectories() {
  * If the 'src/' directory doesn't exist, users will have the option to recursively create the path.
  *
  * @returns {Promise<Array<{ title: string, value: string }>} An array of directory objects, each with a 'title' and 'value'.
- * @throws {Error} If neither 'src/' nor 'app/' directories exist.
  */
 export async function listOfDirectoriesForComponents() {
   const currentPath = shell.pwd().stdout
@@ -112,7 +113,7 @@ export async function listOfDirectoriesForComponents() {
   }
 
   if (directories.length === 0) {
-    throw new Error("Couldn't find src/ or app/ directories.")
+    console.error(red("Couldn't find src/ or app/ directories."))
   }
 
   return directories

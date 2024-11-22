@@ -2,14 +2,15 @@
 import { program } from 'commander'
 
 import {
-  handleComponentCreation, handleInit,
+  handleComponentCreation,
+  handleInit,
   handlePageCreation,
   handleRouteCreation,
+  handleCleanHomePage,
+  handleServerActions,
 } from './handlers'
 import packageJson from '../package.json'
-import { handleCleanHomePage } from './handlers/cleanHomePage'
 import { checkIfValidAppRouterProject } from './utils/errors'
-import { createFile } from './commands'
 
 async function main() {
   await checkIfValidAppRouterProject()
@@ -17,7 +18,7 @@ async function main() {
   program
     .name('next-js-utils')
     .description(
-      'Next Utils CLI: Streamline Next.js route, page, and component creation with the new App router.'
+      'Next Utils CLI: Streamline Next.js route, page, action, and component creation with the new App router.'
     )
     .version(packageJson.version)
 
@@ -42,6 +43,11 @@ async function main() {
     .action(handleCleanHomePage)
 
   program
+    .command('action')
+    .description('Generate a new server action')
+    .action(handleServerActions)
+
+  program
     .command('init')
     .description('Initializes next-utils config file')
     .action(handleInit)
@@ -49,4 +55,9 @@ async function main() {
   program.parse(process.argv)
 }
 
-main()
+main().catch((error) => {
+  console.log(
+    `Something went wrong, please try again later or open an issue on GitHub`
+  )
+  process.exit(1)
+})

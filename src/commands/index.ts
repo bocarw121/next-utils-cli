@@ -1,6 +1,7 @@
 import shell from 'shelljs'
 import * as fs from 'fs'
 import * as path from 'path'
+import { red } from 'ansicolor'
 
 export const createDirRecursively = (path: string) => {
   shell.mkdir('-p', path)
@@ -30,16 +31,20 @@ export const checkIfFileExists = (path: string) => {
 }
 
 export const checkPathInConfigFile = (
-  prop: 'component' | 'page' | 'route' | 'actions',
+  prop: 'component' | 'page' | 'route' | 'action',
   appRoot: string // Accept the user's app root directory
 ) => {
   const configPath = path.resolve(appRoot, 'next-utils-cli.json')
 
   // Check if the file exists before trying to load it
   if (!fs.existsSync(configPath)) {
-    throw new Error(
-      'next-utils-cli.json file does not exist. Please run the init command.'
+    console.error(
+      red(
+        'next-utils-cli.json file does not exist. Please run the init command.'
+      )
     )
+
+    process.exit(1)
   }
 
   // Load the config file
@@ -47,9 +52,12 @@ export const checkPathInConfigFile = (
 
   // Check if the required property exists in the config
   if (!config[prop]) {
-    throw new Error(
-      `The path for ${prop} is not set in next-utils-cli.json. Make sure pages and routes start from the app directory`
+    console.error(
+      red(
+        `The path for ${prop} is not set in next-utils-cli.json. Make sure pages and routes start from the app directory`
+      )
     )
+    process.exit(1)
   }
 
   return config[prop]
