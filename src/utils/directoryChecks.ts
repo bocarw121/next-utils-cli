@@ -35,7 +35,7 @@ const potentialPageLoss = (dirName: string) => ({
  */
 export async function checkAndWarnIfDirExists(
   directoryName: string,
-  type: 'component' | 'page' | 'route'
+  type: 'component' | 'page' | 'route' | 'action'
 ) {
   try {
     const dirName = directoryName.split('/').slice(-1)[0]

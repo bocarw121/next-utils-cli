@@ -107,6 +107,17 @@ export async function routePrompts() {
   ])
 }
 
+export const serverActionPrompt = async () => {
+  return prompt([
+    {
+      type: 'text',
+      name: 'selectedName',
+      message: 'What would you like to name the server action?',
+      onState: handleOnState,
+    },
+  ])
+}
+
 export async function layoutPrompt() {
   return prompt([
     {
