@@ -2,18 +2,19 @@
 
 [![Test](https://github.com/bocarw121/next-utils-cli/actions/workflows/test.yml/badge.svg)](https://github.com/bocarw121/next-utils-cli/actions/workflows/test.yml) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/bocarw121/next-utils-cli/blob/main/LICENCE)
 
-Next Utils CLI is a command-line tool exclusively designed for the new Next.js App router, streamlining the creation of routes, pages, and components in your Next.js application. You can also use Next Utils CLI to clean up the boilerplate code from the home page.
+Next Utils CLI is a command-line tool exclusively designed for the new Next.js App router, streamlining the creation of routes, pages, components, and server actions in your Next.js application. It also allows you to clean up the boilerplate code from the home page and initialize a configuration file.
 
 ## Features
 
-- Quickly generate Next.js routes, pages, and components.
+- Quickly generate Next.js routes, pages, components, and server actions.
 - Create routes with various HTTP methods (GET, POST, PUT, PATCH, DELETE, OPTIONS).
 - Choose between different function types for components.
-- Choice to opt in to client rendering for components and pages.
+- Option to opt in to client rendering for components and pages.
 - Easily customize the path and name for your files.
 - Recursive directory creation for an organized codebase.
-- When using the `page` and `component` commands, function components are camel-cased by default within those created pages and components.
+- Initialize a project-specific configuration file with the `init` command.
 - Clean up the boilerplate code from the home page with the `clean-home-page` command.
+- Server action generation for enhanced server-side capabilities.
 
 ## Installation
 
@@ -28,11 +29,11 @@ npm install -g next-utils-cli
 To use Next Utils CLI, simply run the desired command:
 
 ```bash
-next-utils route
+next-utils page
 ```
 
 ```bash
-next-utils page
+next-utils route
 ```
 
 ```bash
@@ -43,14 +44,40 @@ next-utils component
 next-utils clean-home-page
 ```
 
-Next Utils CLI will guide you through the process of creating routes, pages, and components with interactive prompts.
+```bash
+next-utils init
+```
+
+```bash
+next-utils action
+```
+
+### Available Commands
+
+#### **`page`**
+Generate a new page in the App router.
+
+#### **`route`**
+Generate a new route in the App router. Allows selecting multiple HTTP methods.
+
+#### **`component`**
+Generate a new component with options to customize the type and rendering mode.
+
+#### **`clean-home-page`**
+Removes boilerplate code from the default Next.js home page.
+
+#### **`init`**
+Creates a `next-utils-cli.json` configuration file in the root of your project. This file will store your project-specific preferences for `page`, `route`, and `component` commands.
+
+#### **`action`**
+Generate a new server action file to handle server-side logic seamlessly.
 
 ## Additional Information
 
-- When creating a page, and a route you can only select the `app` directory as the base.
-- For components and pages, you'll be prompted to choose a function type (arrow function or function declaration).
-- When creating a route, you have the flexibility to select multiple HTTP methods to associate with it.
-- When attempting to overwrite an existing directory you will be prompted to confirm the overwrite.
+- **Configuration**: Run the `init` command to generate a `next-utils-cli.json` file, which stores your project preferences, making subsequent commands faster and more consistent.
+- **Component & Page Options**: Choose between arrow function and function declaration styles.
+- **Route Flexibility**: Specify HTTP methods when creating a route.
+- **Conflict Handling**: Prompts you before overwriting existing directories or files.
 
 ## License
 
