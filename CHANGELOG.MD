@@ -1,8 +1,10 @@
-# 1.0.3
+# CHANGELOG
+
+## 1.0.3
 
 - Fixed bug where cli only worked when src was present.
 
-# 1.1.0
+##  1.1.0
 
 - Added a clean-home-page command that clears up all of the next js boilerplate
   code from the home page
@@ -10,12 +12,12 @@
   in a valid next js app router project. It checks to make sure that the next js version
   is greater or equal to 13 and that the project has an app directory.
 
-# 1.1.1
+## 1.1.1
 
 - Fix bug where route and page commands were showing the `/src` directory as an option when the `/app` directory
   is the only valid option.
 
-# 1.2.0
+## 1.2.0
 
 - Enhanced safety and user experience by prompting for directory overwrite confirmation.
 - Added a main function that runs the program after the validation function is complete.
@@ -32,16 +34,22 @@
 - Change createPath to getPath to separate the concerns of creating a path and getting a path.
 - Updated listOfDirectoriesForComponents to add root as an option if no src directory is present.
 
-# 1.2.1
+## 1.2.1
 
 - Updated directory overwrite checks to account for dynamic routes and pages.
 - Added test to husky pre-commit hook.
 
-# 1.2.2
+## 1.2.2
 
 - Fix bug in checkAndWarnIfDirExists, didn't await the promise in the directory check
   which was causing it to be truthy even when the directory didn't exist.
 
-# 1.2.3
+## 1.2.3
 - Fixed bug in `routePrompts`: Removed the `validate` function, which was causing issues 
   when trying to add a custom route path.
+
+
+## 2.0.0
+-  Added `init` command to generate a `next-utils-cli.json` configuration file.
+-  Updated `route`, `page`, and `component` commands to utilize the configuration file.
+-  Introduced the `action` command for creating server actions.
