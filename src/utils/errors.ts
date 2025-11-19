@@ -3,6 +3,10 @@ import { red } from 'ansicolor'
 
 import { doesDirectoryExist } from './directoryChecks'
 
+export type AppValidationResult = {
+  nextVersion: number
+}
+
 export function handleMethodError(methods: string[]) {
   if (!methods.length) {
     console.error(red('You must select at least one method'))
@@ -34,12 +38,12 @@ export function handleKeyError(key: string) {
   }
 }
 
-export async function checkIfValidAppRouterProject() {
+export async function checkIfValidAppRouterProject(): Promise<AppValidationResult> {
   const appDirExists = await doesDirectoryExist('app')
   const appDirExistsInSrc = await doesDirectoryExist('src/app')
-  const isNextVersion13 = await isNextVersionAtLeast13()
+  const nextVersion = await resolveNextJsVersion()
 
-  if (!isNextVersion13) {
+  if (!nextVersion || nextVersion < 13) {
     console.error(
       red(
         'You must be using Next.js version 13 or higher to use next-utils-cli.'
@@ -56,26 +60,40 @@ export async function checkIfValidAppRouterProject() {
     )
     process.exit(1)
   }
+
+  return {
+    nextVersion,
+  }
 }
 
-async function isNextVersionAtLeast13() {
-  const isPackageJson = await stat('package.json')
+async function resolveNextJsVersion() {
+  let packageFile
+  try {
+    packageFile = await stat('package.json')
+  } catch (_) {
+    return null
+  }
 
-  if (!isPackageJson.isFile()) {
-    return false
+  if (!packageFile.isFile()) {
+    return null
   }
 
   const packageJson = await readFile('package.json', 'utf-8')
 
-  const { dependencies } = JSON.parse(packageJson)
+  const { dependencies = {}, devDependencies = {} } = JSON.parse(packageJson)
 
-  const nextVersion = dependencies?.next?.replace('^', '')
+  const rawVersion = dependencies.next || devDependencies.next
 
-  if (!nextVersion) {
-    return false
+  if (!rawVersion) {
+    return null
   }
 
-  const nextMajorVersion = nextVersion.split('.').map(Number)[0]
+  const cleaned = rawVersion.replace(/^[^0-9]*/, '')
+  const nextMajorVersion = Number.parseInt(cleaned.split('.')[0] ?? '0', 10)
 
-  return nextMajorVersion >= 13
+  if (Number.isNaN(nextMajorVersion)) {
+    return null
+  }
+
+  return nextMajorVersion
 }

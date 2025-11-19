@@ -5,6 +5,7 @@ import {
   dynamicPagePrompt,
   layoutPrompt,
   pagePrompt,
+  composeCachePromptResult,
 } from '../prompts'
 import { handleErrors, handleKeyError } from '../utils/errors'
 import { handleSuccess } from '../utils/success'
@@ -19,12 +20,18 @@ import {
   appDirectoryCheck,
   checkAndWarnIfDirExists,
 } from '../utils/directoryChecks'
-import { red } from 'ansicolor'
+import { red, yellow } from 'ansicolor'
 
 export async function handlePageCreation() {
   try {
-    const { selectedName, clientComponent, customPath, isArrowFunction } =
-      await pagePrompt()
+    const {
+      selectedName,
+      clientComponent,
+      customPath,
+      isArrowFunction,
+      useCache,
+      cacheLifeProfile,
+    } = await pagePrompt()
 
     const selectedPath = checkPathInConfigFile('page', process.cwd())
 
@@ -42,6 +49,20 @@ export async function handlePageCreation() {
 
     const pageName = upperFirst(camelCase(selectedName))
 
+    if (clientComponent && useCache) {
+      console.log(
+        yellow(
+          'Ignoring the "use cache" directive because client components cannot be cached.'
+        )
+      )
+    }
+
+    const cacheResult = composeCachePromptResult({
+      clientComponent,
+      useCache,
+      cacheLifeProfile,
+    })
+
     if (isDynamicPage) {
       const { key } = await dynamicKeyPrompt()
 
@@ -53,18 +74,31 @@ export async function handlePageCreation() {
 
       createDirRecursively(fullPath)
 
-      handleDynamicPageFiles(
-        fullPath,
+      const dynamicShouldUseCache =
+        !isDynamicClientComponent && cacheResult.useCache
+
+      handleDynamicPageFiles({
+        basePath: fullPath,
         pageName,
-        isDynamicClientComponent,
-        key,
-        isArrowFunction
-      )
+        clientComponent: isDynamicClientComponent,
+        dynamicKey: key,
+        isArrowFunction,
+        useCache: dynamicShouldUseCache,
+        cacheLifeProfile: dynamicShouldUseCache
+          ? cacheResult.cacheLifeProfile
+          : 'none',
+      })
     }
 
     createDirRecursively(fullPath)
 
-    handlePageFiles(fullPath, pageName, clientComponent, isArrowFunction)
+    handlePageFiles(fullPath, {
+      pageName,
+      clientComponent,
+      isArrowFunction,
+      useCache: cacheResult.useCache,
+      cacheLifeProfile: cacheResult.cacheLifeProfile,
+    })
 
     if (isLayout) {
       handleLayoutFiles(fullPath, pageName)

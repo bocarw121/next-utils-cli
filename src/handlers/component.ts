@@ -1,4 +1,5 @@
 import { camelCase, upperFirst } from 'lodash'
+import { yellow } from 'ansicolor'
 
 import {
   addContentToPath,
@@ -7,15 +8,21 @@ import {
   createFile,
 } from '../commands'
 import { component, componentWithFunctionKeyword } from '../templates'
-import { componentPrompt } from '../prompts'
+import { componentPrompt, composeCachePromptResult } from '../prompts'
 import { handleErrors } from '../utils/errors'
 import { handleSuccess } from '../utils/success'
 import { getPath } from '../utils/handlerUtils'
 import { checkAndWarnIfDirExists } from '../utils/directoryChecks'
 
 export async function handleComponentCreation() {
-  const { selectedName, clientComponent, customPath, isFunctionDeclaration } =
-    await componentPrompt()
+  const {
+    selectedName,
+    clientComponent,
+    customPath,
+    isFunctionDeclaration,
+    useCache,
+    cacheLifeProfile,
+  } = await componentPrompt()
 
   const selectedPath = checkPathInConfigFile('component', process.cwd())
 
@@ -27,13 +34,29 @@ export async function handleComponentCreation() {
 
   await checkAndWarnIfDirExists(fullPath, 'component')
 
+  const cacheResult = composeCachePromptResult({
+    clientComponent,
+    useCache,
+    cacheLifeProfile,
+  })
+
+  if (clientComponent && useCache) {
+    console.log(
+      yellow(
+        'Ignoring the "use cache" directive because client components cannot be cached. '
+      )
+    )
+  }
+
   createDirRecursively(fullPath)
 
   handleComponentFiles(
     fullPath,
     componentName,
     clientComponent,
-    isFunctionDeclaration
+    isFunctionDeclaration,
+    cacheResult.useCache,
+    cacheResult.cacheLifeProfile
   )
 
   handleSuccess(componentName, 'component')
@@ -43,7 +66,9 @@ function handleComponentFiles(
   fullPath: string,
   componentName: string,
   clientComponent: boolean,
-  isFunctionDeclaration: boolean
+  isFunctionDeclaration: boolean,
+  useCache: boolean,
+  cacheLifeProfile?: string
 ) {
   const componentFile = `${fullPath}/${componentName}.tsx`
   const indexTs = `${fullPath}/index.ts`
@@ -52,8 +77,13 @@ function handleComponentFiles(
   createFile(indexTs)
 
   const createdComponent = isFunctionDeclaration
-    ? componentWithFunctionKeyword(componentName, clientComponent)
-    : component(componentName, clientComponent)
+    ? componentWithFunctionKeyword(
+        componentName,
+        clientComponent,
+        useCache,
+        cacheLifeProfile
+      )
+    : component(componentName, clientComponent, useCache, cacheLifeProfile)
 
   addContentToPath(componentFile, createdComponent)
 

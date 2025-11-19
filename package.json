@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "next-utils": "ts-node src/index.ts",
-    "build": "npm test && ./scripts/build.sh",
+    "build": "npm test && node ./scripts/build.cjs",
     "link": "cd tester && npm link next-utils-cli",
     "prepublishOnly": "npm test",
     "test": "jest",
@@ -51,6 +51,7 @@
     "@parcel/transformer-typescript-types": "^2.8.3",
     "@types/jest": "^29.5.5",
     "@types/lodash": "^4.14.199",
+    "@types/node": "^24.10.1",
     "@types/prompts": "^2.4.6",
     "@types/shelljs": "^0.8.13",
     "husky": "^8.0.0",

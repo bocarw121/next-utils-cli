@@ -1,14 +1,32 @@
 import { createDirRecursively, createFile, addContentToPath } from '../commands'
 import { page, pageWithFunctionKeyword, layoutComponent } from '../templates'
 
-export function handleDynamicPageFiles(
-  fullPath: string,
-  pageName: string,
-  clientPage: boolean,
-  key: string,
+type PageFileOptions = {
+  pageName: string
+  clientComponent: boolean
   isArrowFunction: boolean
-) {
-  const dynamicDir = `${fullPath}/[${key}]`
+  useCache?: boolean
+  cacheLifeProfile?: string | null
+  dynamicKey?: string
+}
+
+type DynamicPageOptions = PageFileOptions & {
+  basePath: string
+  dynamicKey: string
+}
+
+export function handleDynamicPageFiles(options: DynamicPageOptions) {
+  const {
+    basePath,
+    pageName,
+    clientComponent,
+    dynamicKey,
+    isArrowFunction,
+    useCache,
+    cacheLifeProfile,
+  } = options
+
+  const dynamicDir = `${basePath}/[${dynamicKey}]`
 
   createDirRecursively(dynamicDir)
 
@@ -16,26 +34,44 @@ export function handleDynamicPageFiles(
 
   createFile(dynamicPageFile)
 
+  const templateOptions = {
+    name: pageName,
+    clientComponent,
+    dynamicKey,
+    useCache,
+    cacheLifeProfile,
+  }
+
   const dynamicPage = isArrowFunction
-    ? page(pageName, clientPage, key)
-    : pageWithFunctionKeyword(pageName, clientPage, key)
+    ? page(templateOptions)
+    : pageWithFunctionKeyword(templateOptions)
 
   addContentToPath(dynamicPageFile, dynamicPage)
 }
 
-export function handlePageFiles(
-  fullPath: string,
-  pageName: string,
-  clientPage: boolean,
-  isArrowFunction: boolean
-) {
+export function handlePageFiles(fullPath: string, options: PageFileOptions) {
+  const {
+    pageName,
+    clientComponent,
+    isArrowFunction,
+    useCache,
+    cacheLifeProfile,
+  } = options
+
   const pageFile = `${fullPath}/page.tsx`
 
   createFile(pageFile)
 
+  const templateOptions = {
+    name: pageName,
+    clientComponent,
+    useCache,
+    cacheLifeProfile,
+  }
+
   const createdPage = isArrowFunction
-    ? page(pageName, clientPage)
-    : pageWithFunctionKeyword(pageName, clientPage)
+    ? page(templateOptions)
+    : pageWithFunctionKeyword(templateOptions)
 
   addContentToPath(pageFile, createdPage)
 }

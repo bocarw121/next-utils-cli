@@ -11,9 +11,11 @@ import {
 } from './handlers'
 import packageJson from '../package.json'
 import { checkIfValidAppRouterProject } from './utils/errors'
+import { setProjectInfo } from './utils/projectInfo'
 
 async function main() {
-  await checkIfValidAppRouterProject()
+  const projectInfo = await checkIfValidAppRouterProject()
+  setProjectInfo(projectInfo)
 
   program
     .name('next-js-utils')

@@ -53,3 +53,10 @@
 -  Added `init` command to generate a `next-utils-cli.json` configuration file.
 -  Updated `route`, `page`, and `component` commands to utilize the configuration file.
 -  Introduced the `action` command for creating server actions.
+
+## 2.1.0
+-  Added Next.js version awareness across prompts and handlers to unlock feature-specific guidance.
+-  Introduced optional cache directives, `cacheLife` presets, and automatic cache-component messaging for Next.js 16 scaffolds.
+-  Updated page, route, and component templates to align with Next.js 15 promise-based params, request bodies, and Partial Pre-rendering patterns.
+-  Normalized custom path handling and expanded test coverage for new handler utilities.
+-  Enhanced `init` to configure `cacheComponents` and the React Compiler in `next.config.*` when desired.

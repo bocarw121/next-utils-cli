@@ -1,57 +1,127 @@
-export function page(
-  name: string,
-  pageComponent: boolean,
-  id?: string
-): string {
-  let useClient = pageComponent ? "'use client' \n" : ''
-
-  return `${useClient}import React from 'react';
-
-${
-  id
-    ? `type ${name}Props = {
-  params: {
-    ${[id]}: string
-  }
-};`
-    : `type ${name}Props = {};`
+type CacheOptions = {
+  useCache?: boolean
+  cacheLifeProfile?: string
 }
 
-const ${name} = (props: ${name}Props) => {
-  return <h1>Welcome to your ${name} page ${id ? `{props.params.id}` : ''}</h1>
+type PageTemplateOptions = CacheOptions & {
+  name: string
+  clientComponent: boolean
+  dynamicKey?: string
+}
+
+const shouldApplyCacheLife = (cacheLifeProfile?: string) =>
+  Boolean(cacheLifeProfile && cacheLifeProfile !== 'none')
+
+function composeImports(includeCacheLife: boolean) {
+  const imports = ["import React from 'react';"]
+
+  if (includeCacheLife) {
+    imports.unshift("import { cacheLife } from 'next/cache'")
+  }
+
+  return imports.join('\n')
+}
+
+function composeCacheLines({ useCache, cacheLifeProfile }: CacheOptions) {
+  if (!useCache) {
+    return ''
+  }
+
+  const lines = ["  'use cache'"]
+
+  if (shouldApplyCacheLife(cacheLifeProfile)) {
+    lines.push(`  cacheLife('${cacheLifeProfile}')`)
+  }
+
+  return `${lines.join('\n')}\n\n`
+}
+
+function createPropsType(name: string, dynamicKey?: string) {
+  if (!dynamicKey) {
+    return `type ${name}Props = {};`
+  }
+
+  return `type ${name}Props = {
+  params: {
+    ${dynamicKey}: string
+  }
+};`
+}
+
+function createDynamicAssignment(dynamicKey?: string) {
+  if (!dynamicKey) {
+    return ''
+  }
+
+  return `  const { ${dynamicKey} } = props.params\n\n`
+}
+
+function createHeading(name: string, dynamicKey?: string) {
+  if (!dynamicKey) {
+    return `<h1>Welcome to your ${name} page</h1>`
+  }
+
+  return `<h1>Welcome to your ${name} page {${dynamicKey}}</h1>`
+}
+
+export function page(options: PageTemplateOptions): string {
+  const { name, clientComponent, dynamicKey } = options
+  const allowCache = !clientComponent && Boolean(options.useCache)
+  const includeCacheLife =
+    allowCache && shouldApplyCacheLife(options.cacheLifeProfile)
+  const directive = clientComponent ? "'use client';\n\n" : ''
+  const imports = composeImports(includeCacheLife)
+  const propsType = createPropsType(name, dynamicKey)
+  const cacheLines = composeCacheLines({
+    useCache: allowCache,
+    cacheLifeProfile: options.cacheLifeProfile,
+  })
+  const dynamicAssignment = createDynamicAssignment(dynamicKey)
+  const heading = createHeading(name, dynamicKey)
+  const asyncKeyword = allowCache ? 'async ' : ''
+
+  return `${directive}${imports}
+
+${propsType}
+
+const ${name} = ${asyncKeyword}(props: ${name}Props) => {
+${dynamicAssignment}${cacheLines}  return ${heading}
  };
 
 export default ${name};
   `
 }
 
-export function pageWithFunctionKeyword(
-  name: string,
-  pageComponent: boolean,
-  id?: string
-): string {
-  let useClient = pageComponent ? "'use client' \n" : ''
+export function pageWithFunctionKeyword(options: PageTemplateOptions): string {
+  const { name, clientComponent, dynamicKey } = options
+  const allowCache = !clientComponent && Boolean(options.useCache)
+  const includeCacheLife =
+    allowCache && shouldApplyCacheLife(options.cacheLifeProfile)
+  const directive = clientComponent ? "'use client';\n\n" : ''
+  const imports = composeImports(includeCacheLife)
+  const propsType = createPropsType(name, dynamicKey)
+  const cacheLines = composeCacheLines({
+    useCache: allowCache,
+    cacheLifeProfile: options.cacheLifeProfile,
+  })
+  const dynamicAssignment = createDynamicAssignment(dynamicKey)
+  const heading = createHeading(name, dynamicKey)
+  const signature = allowCache
+    ? `export default async function ${name}(props: ${name}Props)`
+    : `export default function ${name}(props: ${name}Props)`
 
-  return `${useClient}import React from 'react';
+  return `${directive}${imports}
   
-${
-  id
-    ? `type ${name}Props = {
-  params: {
-    ${[id]}: string
-  }
-};`
-    : `type ${name}Props = {};`
-}
+${propsType}
 
-export default function ${name}(props: ${name}Props) {
-  return <h1>Welcome to your ${name} page ${id ? `{props.params.id}` : ''}</h1>
+${signature} {
+${dynamicAssignment}${cacheLines}  return ${heading}
 };
   `
 }
 
 export function layoutComponent(name: string): string {
-  return `import React from 'react'; 
+  return `import React from 'react';
 
 type ${name}Props = {
   children: React.ReactNode

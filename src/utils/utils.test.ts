@@ -7,21 +7,29 @@ import {
   handleDynamicRouteFiles,
   handleMethod,
 } from './routeHandlerUtils'
-import { handleDynamicPageFiles, handleLayoutFiles } from './pageHandlerUtils'
+import {
+  handleDynamicPageFiles,
+  handleLayoutFiles,
+  handlePageFiles,
+} from './pageHandlerUtils'
 import { createDirRecursively } from '../commands'
+import { page, layoutComponent } from '../templates'
+import { composeCachePromptResult } from '../prompts'
 
 describe('routeHandlerUtils', () => {
   afterAll(() => {
     // Delete the 'routes' directory after all tests
-    fs.rmSync('./routes', { recursive: true })
+    if (fs.existsSync('./routes')) {
+      fs.rmSync('./routes', { recursive: true })
+    }
   })
 
   describe('createPath', () => {
     it('should create a path with routeName and customPath', () => {
-      const path = 'routes'
+      const basePath = 'routes'
       const routeName = 'example'
-      const customPath = 'custom'
-      const fullPath = getPath(path, routeName, customPath)
+      const customPath = '/custom/'
+      const fullPath = getPath(basePath, routeName, customPath)
 
       createDirRecursively(fullPath)
 
@@ -33,9 +41,9 @@ describe('routeHandlerUtils', () => {
     })
 
     it('should create a path with routeName only', () => {
-      const path = 'routes'
+      const basePath = 'routes'
       const routeName = 'example'
-      const fullPath = getPath(path, routeName, '')
+      const fullPath = getPath(basePath, routeName, '')
 
       createDirRecursively(fullPath)
 
@@ -112,7 +120,7 @@ describe('routeHandlerUtils', () => {
       // Check if the content was added to the route file
       const routeFileContent = fs.readFileSync(routeFilePath, 'utf-8')
       expect(routeFileContent).toContain(
-        'export async function GET(request: Request )'
+        'export async function GET(request: Request)'
       )
 
       // Delete the file and directory after the test
@@ -125,7 +133,9 @@ describe('routeHandlerUtils', () => {
 describe('pageHandlerUtils', () => {
   afterAll(() => {
     // Delete the directory after the test
-    fs.rmSync('./pages', { recursive: true })
+    if (fs.existsSync('./pages')) {
+      fs.rmSync('./pages', { recursive: true })
+    }
   })
   describe('handleDynamicPageFiles', () => {
     it('should create and handle dynamic page files with arrow function', () => {
@@ -136,13 +146,15 @@ describe('pageHandlerUtils', () => {
       const isArrowFunction = true
 
       // Create dynamic page files
-      handleDynamicPageFiles(
-        fullPath,
+      handleDynamicPageFiles({
+        basePath: fullPath,
         pageName,
-        clientPage,
-        key,
-        isArrowFunction
-      )
+        clientComponent: clientPage,
+        dynamicKey: key,
+        isArrowFunction,
+        useCache: false,
+        cacheLifeProfile: 'none',
+      })
 
       // Check if dynamic page files were created
       const dynamicPageFilePath = `${fullPath}/[${key}]/page.tsx`
@@ -159,12 +171,8 @@ describe('pageHandlerUtils', () => {
       const fullPath = 'layouts'
       const pageName = 'LayoutPage'
 
-      // Create the directory if it doesn't exist
-      if (!fs.existsSync(fullPath)) {
-        fs.mkdirSync(fullPath, { recursive: true })
-      }
+      createDirRecursively(fullPath)
 
-      // Create layout files
       handleLayoutFiles(fullPath, pageName)
 
       // Check if layout files were created
@@ -174,6 +182,97 @@ describe('pageHandlerUtils', () => {
       // Delete the file and directory after the test
       fs.unlinkSync(layoutFilePath)
       fs.rmSync(fullPath, { recursive: true })
+    })
+  })
+
+  it('should create page files with cache directive when enabled', () => {
+    const fullPath = 'pages/cacheable'
+    const pageName = 'CachedPage'
+
+    createDirRecursively(fullPath)
+
+    handlePageFiles(fullPath, {
+      pageName,
+      clientComponent: false,
+      isArrowFunction: false,
+      useCache: true,
+      cacheLifeProfile: 'minutes',
+    })
+
+    const pageFilePath = `${fullPath}/page.tsx`
+    const content = fs.readFileSync(pageFilePath, 'utf-8')
+
+    expect(content).toContain("'use cache'")
+    expect(content).toContain("cacheLife('minutes')")
+
+    fs.unlinkSync(pageFilePath)
+    fs.rmSync(fullPath, { recursive: true })
+  })
+
+  it('should not add cache directive for layouts', () => {
+    const fullPath = 'pages/layout-only'
+    const pageName = 'LayoutOnly'
+
+    createDirRecursively(fullPath)
+
+    handleLayoutFiles(fullPath, pageName)
+
+    const layoutFilePath = `${fullPath}/layout.tsx`
+    const content = fs.readFileSync(layoutFilePath, 'utf-8')
+
+    expect(content).not.toContain("'use cache'")
+    expect(content).not.toContain('cacheLife(')
+
+    fs.unlinkSync(layoutFilePath)
+    fs.rmSync(fullPath, { recursive: true })
+  })
+})
+
+describe('templates', () => {
+  it('layoutComponent should return a layout without cache directives', () => {
+    const layout = layoutComponent('Home')
+
+    expect(layout).toContain('export default function HomeLayout')
+    expect(layout).not.toContain("'use cache'")
+  })
+
+  it('page template respects cache options', () => {
+    const content = page({
+      name: 'Foo',
+      clientComponent: false,
+      useCache: true,
+      cacheLifeProfile: 'hours',
+    })
+
+    expect(content).toContain("'use cache'")
+    expect(content).toContain("cacheLife('hours')")
+  })
+})
+
+describe('prompts', () => {
+  it('composeCachePromptResult infers cacheLife from selection', () => {
+    const result = composeCachePromptResult({
+      clientComponent: false,
+      useCache: true,
+      cacheLifeProfile: 'minutes',
+    })
+
+    expect(result).toEqual({
+      useCache: true,
+      cacheLifeProfile: 'minutes',
+    })
+  })
+
+  it('composeCachePromptResult disables cache for client components', () => {
+    const result = composeCachePromptResult({
+      clientComponent: true,
+      useCache: true,
+      cacheLifeProfile: 'hours',
+    })
+
+    expect(result).toEqual({
+      useCache: false,
+      cacheLifeProfile: 'none',
     })
   })
 })

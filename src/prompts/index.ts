@@ -3,32 +3,107 @@ import { blue } from 'ansicolor'
 
 import { listOfDirectories, listOfDirectoriesForComponents } from '../utils'
 import { handleMessage, handleOnState, validateText } from './utils'
+import { getProjectInfo } from '../utils/projectInfo'
 
 export async function prompt(questions: prompts.PromptObject[]) {
   return prompts(questions)
 }
 
-const commonQuestions: prompts.PromptObject<string>[] = [
-  {
-    type: 'toggle',
-    name: 'isArrowFunction',
-    message:
-      'Do you want to use an arrow function for the component? The default is a function declaration.',
-    initial: false,
-    active: 'Yes',
-    inactive: 'No',
-    onState: handleOnState,
-  },
-  {
-    type: 'toggle',
-    name: 'clientComponent',
-    message: 'Do you want to create a client component?',
-    initial: false,
-    active: 'Yes',
-    inactive: 'No',
-    onState: handleOnState,
-  },
+const cacheLifeChoices = [
+  { title: 'No preset', value: 'none' },
+  { title: 'seconds', value: 'seconds' },
+  { title: 'minutes', value: 'minutes' },
+  { title: 'hours', value: 'hours' },
+  { title: 'days', value: 'days' },
 ]
+
+type PromptContext = 'page' | 'component'
+
+function buildCommonQuestions(
+  context: PromptContext
+): prompts.PromptObject<string>[] {
+  const { nextVersion } = getProjectInfo()
+
+  const base: prompts.PromptObject<string>[] = [
+    {
+      type: 'toggle',
+      name: 'isArrowFunction',
+      message:
+        'Do you want to use an arrow function for the component? The default is a function declaration.',
+      initial: false,
+      active: 'Yes',
+      inactive: 'No',
+      onState: handleOnState,
+    },
+    {
+      type: 'toggle',
+      name: 'clientComponent',
+      message: 'Do you want to create a client component?',
+      initial: false,
+      active: 'Yes',
+      inactive: 'No',
+      onState: handleOnState,
+    },
+  ]
+
+  if ((nextVersion ?? 0) >= 16) {
+    base.push(
+      {
+        type: (_prev, values) => (values.clientComponent ? null : 'toggle'),
+        name: 'useCache',
+        message: `Enable the "use cache" directive for this ${context}?`,
+        initial: false,
+        active: 'Yes',
+        inactive: 'No',
+        onState: handleOnState,
+      },
+      {
+        type: (prev, values) => {
+          if (values.clientComponent) {
+            return null
+          }
+
+          return prev ? 'select' : null
+        },
+        name: 'cacheLifeProfile',
+        message:
+          'Pick a cacheLife preset (optional). You can configure custom profiles in next.config.',
+        choices: cacheLifeChoices,
+        initial: 0,
+        onState: handleOnState,
+      }
+    )
+  }
+
+  return base
+}
+
+type CachePromptAnswers = {
+  clientComponent: boolean
+  useCache?: boolean
+  cacheLifeProfile?: string
+}
+
+type CachePromptResult = {
+  useCache: boolean
+  cacheLifeProfile: string
+}
+
+export function composeCachePromptResult(
+  answers: CachePromptAnswers
+): CachePromptResult {
+  const allowCache = !answers.clientComponent && Boolean(answers.useCache)
+  const normalizedProfile = allowCache
+    ? answers.cacheLifeProfile && answers.cacheLifeProfile !== 'none'
+      ? answers.cacheLifeProfile
+      : 'none'
+    : 'none'
+
+  return {
+    useCache: allowCache,
+    cacheLifeProfile: normalizedProfile,
+  }
+}
 
 export async function componentPrompt() {
   return prompt([
@@ -52,7 +127,7 @@ export async function componentPrompt() {
       message: handleMessage('(e.g., ./components)', 'component'),
       onState: handleOnState,
     },
-    ...commonQuestions,
+    ...buildCommonQuestions('component'),
   ])
 }
 
@@ -78,7 +153,7 @@ export async function pagePrompt() {
       message: handleMessage('(e.g., /dashboard)', 'page'),
       onState: handleOnState,
     },
-    ...commonQuestions,
+    ...buildCommonQuestions('page'),
   ])
 }
 
